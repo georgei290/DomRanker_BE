@@ -1,14 +1,21 @@
-import { userData } from "./interface";
 import mongoose from "mongoose";
 import isEmail from "validator/lib/isEmail";
 
-//creating extended interface for database addons
-interface iUserData extends userData, mongoose.Document {
-  _doc: any;
+interface userData {
+  status?: string;
+  fullName?: string;
+  userName?: string;
+  email?: string;
+  password?: string;
+  avatar?: string;
+  token?: string;
+  verified?: boolean;
 }
 
+interface iUserData extends userData, mongoose.Document {}
+
 // creating model for the users
-const userModel = new mongoose.Schema(
+const userTestModel = new mongoose.Schema(
   {
     status: {
       type: String,
@@ -44,9 +51,8 @@ const userModel = new mongoose.Schema(
   },
   {
     timestamps: true,
-    versionKey: false,
   },
 );
 
 // preparing the models for export and usage
-export default mongoose.model<iUserData>("users", userModel);
+export default mongoose.model<iUserData>("usersTest", userTestModel);

@@ -2,6 +2,7 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { HttpCode, MainAppError } from "./utlis/MainAppError";
 import { errorHandlers } from "./utlis/OtherErrors";
+import user from "./routers/userRouter";
 
 export const mainApp = (app: Application) => {
   // call all neccessary middles for this app
@@ -11,6 +12,7 @@ export const mainApp = (app: Application) => {
     .use(cors({ origin: "*" }))
 
     //all routes
+    .use("/api/user", user)
 
     .get("/", (req: Request, res: Response) => {
       try {

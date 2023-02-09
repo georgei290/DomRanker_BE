@@ -3,7 +3,7 @@ import dot from "dotenv"
 dot.config()
 
 
-let dbString = process.env.DB_STRING
+let dbString = process.env.DB_STRING_ONLINE_BEST;
 
 export const connectDB = async(): Promise<void> => {
     try{
