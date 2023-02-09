@@ -1,11 +1,11 @@
-import Joi from "joi";
+import joi from "joi";
 import { HttpCode, MainAppError } from "../../utlis/MainAppError";
 import { NextFunction } from "express";
 
 // Central validation function
 
 const validator = async (
-  schemaName: Joi.ObjectSchema,
+  schemaName: joi.ObjectSchema,
   body: object,
   next: NextFunction,
 ): Promise<void> => {
