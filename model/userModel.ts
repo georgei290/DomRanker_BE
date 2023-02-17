@@ -16,6 +16,9 @@ const userModel = new mongoose.Schema(
     avatar: {
       type: String,
     },
+    avatarID: {
+      type: String,
+    },
     fullName: {
       type: String,
     },

@@ -1,0 +1,13 @@
+declare module "*nodemailer";
+declare module "*bcrypt";
+declare module "*jsonwebtoken";
+declare module "*ejs";
+declare module "*multer";
+declare module "*crypto";
+declare module "*cors";
+declare module "*path";
+declare module "*express";
+declare module "*session";
+declare module "*cloudinary";
+declare module "*dotenv";
+declare module "*mongoose";

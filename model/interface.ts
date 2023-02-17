@@ -5,6 +5,7 @@ export interface userData {
   email?: string;
   password?: string;
   avatar?: string;
+  avatarID?: string;
   token?: string;
   verified?: boolean;
 }
