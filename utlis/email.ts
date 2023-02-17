@@ -3,11 +3,11 @@ import nodemailer from "nodemailer";
 import ejs from "ejs";
 import path from "path";
 
-const GOOGLE_SECRET = "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";
+const GOOGLE_SECRET = "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";
 const GOOGLE_ID =
-  "1001238833498-cqm9f9c1mh3m1khppm3392npjalj8b4s.apps.googleusercontent.com";
+  "1054310070984-bqesvn0ftgmhcn6p6292jskt91rk4n5e.apps.googleusercontent.com";
 const GOOGLE_REFRESHTOKEN =
-  "1//04h7d93kXEa_mCgYIARAAGAQSNwF-L9IrRBMf9gTPHHPp4rsWwU2m6arOFmIUgpZPaL-Cov37TXIF6SM2XIoFhScTFOD1ZDaezBY";
+  "1//04dIMtDvNwamFCgYIARAAGAQSNwF-L9IrFJgJO7AzsDu8l4eJ0xQq5VcPSg9TL3sYVHufYPXj-inHC6ApFpP7hvl8goZR32Cd9TY";
 const GOOGLE_REDIRECT = "https://developers.google.com/oauthplayground";
 
 const oAuth = new google.auth.OAuth2(GOOGLE_ID, GOOGLE_SECRET, GOOGLE_REDIRECT);
@@ -23,7 +23,7 @@ export const resetUserPassword = async (user: any, myToken: any) => {
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: "ajwalletcoins@gmail.com",
+        user: "georgeseo06@gmail.com",
         refreshToken: accessToken.token,
         clientId: GOOGLE_ID,
         clientSecret: GOOGLE_SECRET,
@@ -31,7 +31,7 @@ export const resetUserPassword = async (user: any, myToken: any) => {
       },
     });
 
-    const buildFile = path.join(__dirname, "../views/resetPassword.ejs");
+    const buildFile = path.join(__dirname, "../views/passwordReset.ejs");
     const data = await ejs.renderFile(buildFile, {
       id: user._id,
       myToken,
@@ -39,7 +39,7 @@ export const resetUserPassword = async (user: any, myToken: any) => {
     });
 
     const mailOptions = {
-      from: "SchoolCode ❤❤❤ <newstudentsportal2@gmail.com>",
+      from: "My SEO Optimizer ❤❤❤ <georgeseo06@gmail.com>",
       to: user?.email,
       subject: "Reset Password",
       html: data,
@@ -58,7 +58,7 @@ export const verifiedUserMail = async (user: any) => {
       service: "gmail",
       auth: {
         type: "OAuth2",
-        user: "ajwalletcoins@gmail.com",
+        user: "georgeseo06@gmail.com",
         refreshToken: accessToken.token,
         clientId: GOOGLE_ID,
         clientSecret: GOOGLE_SECRET,
@@ -76,7 +76,7 @@ export const verifiedUserMail = async (user: any) => {
     });
 
     const mailOptions = {
-      from: "My SEO Optimizer ❤❤❤ <newstudentsportal2@gmail.com>",
+      from: "My SEO Optimizer ❤❤❤ <georgeseo06@gmail.com>",
       to: user.email,
       subject: "Account Verification",
       html: data,
