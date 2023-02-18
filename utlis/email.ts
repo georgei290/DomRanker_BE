@@ -87,3 +87,38 @@ export const verifiedUserMail = async (user: any) => {
     return error;
   }
 };
+
+export const OTPReceivedMail = async (user: any, getOTP) => {
+  try {
+    const accessToken = await oAuth.getAccessToken();
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        type: "OAuth2",
+        user: "georgeseo06@gmail.com",
+        refreshToken: accessToken.token,
+        clientId: GOOGLE_ID,
+        clientSecret: GOOGLE_SECRET,
+        accessToken: GOOGLE_REFRESHTOKEN,
+      },
+    });
+
+    const buildFile = path.join(__dirname, "../views/OTPmessage.ejs");
+
+    const data = await ejs.renderFile(buildFile, {
+      otp: getOTP,
+      url,
+    });
+
+    const mailOptions = {
+      from: "My SEO Optimizer ❤❤❤ <georgeseo06@gmail.com>",
+      to: user.email,
+      subject: "OTP MESSAGE",
+      html: data,
+    };
+
+    transporter.sendMail(mailOptions);
+  } catch (error) {
+    return error;
+  }
+};

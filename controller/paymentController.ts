@@ -1,10 +1,9 @@
 import Flutterwave from "flutterwave-node-v3";
 import dotenv from "dotenv";
-import axios from "axios";
 import { v4 as uuid } from "uuid";
 import userModel from "../model/userModel";
 import { asyncHandler } from "./handlers";
-import crypto from "crypto";
+import { OTPReceivedMail } from "../utlis/email";
 dotenv.config();
 
 const flw = new Flutterwave(
@@ -19,11 +18,13 @@ let reCallCharge;
 
 export const activatePlan = asyncHandler(async (req: any, res: any) => {
   try {
+    //   getting users card input
     const { card_number, cvv, expiry_month, expiry_year, amount, pin } =
       req.body;
 
     const user = await userModel.findById(req.params.id);
 
+    // Building the neccessary payload for flutterwave geteway consumption
     const payload: any = {
       card_number,
       cvv,
@@ -80,6 +81,14 @@ export const activatePlan = asyncHandler(async (req: any, res: any) => {
       //     });
       //   }
     }
+
+    //   send the OTP via e-mail of the user!
+    //   send the OTP via e-mail of the user!
+    OTPReceivedMail(user, getOTP)
+      .then((result) => {
+        console.log("message been sent to you: ");
+      })
+      .catch((error) => console.log(error));
 
     res.status(201).json({
       message: "Getting the Response: ",
