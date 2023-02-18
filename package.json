@@ -31,6 +31,8 @@
     "request-ip": "^3.3.0",
     "streamifier": "^0.1.1",
     "ts-node": "^10.9.1",
+    "uuid": "^9.0.0",
+    "uuidv4": "^6.2.13",
     "validator": "^13.9.0"
   }
 }

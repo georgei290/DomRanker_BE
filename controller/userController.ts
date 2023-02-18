@@ -327,11 +327,11 @@ export const updatePersonInfo = async (
   res: Response,
 ): Promise<Response> => {
   try {
-    const { fullName, userName } = req.body;
+    const { fullName, userName, phone } = req.body;
 
     const user = await userModel.findByIdAndUpdate(
       req.params.id,
-      { fullName, userName },
+      { fullName, userName,phone },
       { new: true },
     );
     return res.status(200).json({

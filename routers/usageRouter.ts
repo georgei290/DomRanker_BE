@@ -3,7 +3,7 @@ import {
   getBingKeywords,
   getGoogleKeywords,
   // starterPlan
-} from "../controller/uasageController";
+} from "../controller/usageController";
 
 const router: Router = express.Router();
 
