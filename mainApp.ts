@@ -5,6 +5,9 @@ import { errorHandlers } from "./utlis/OtherErrors";
 import user from "./routers/userRouter";
 import usage from "./routers/usageRouter";
 
+import os from "os";
+import axios from "axios";
+
 export const mainApp = (app: Application) => {
   // call all neccessary middles for this app
   app
@@ -15,6 +18,18 @@ export const mainApp = (app: Application) => {
     //all routes
     .use("/api/user", user)
     .use("/api/usage", usage)
+    .use("/get", async (req, res) => {
+      await axios
+        .get(
+          "https://ipgeolocation.abstractapi.com/v1/?api_key=13d114e76253410796c509c40729459b",
+        )
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    })
 
     .get("/", (req: Request, res: Response) => {
       try {
