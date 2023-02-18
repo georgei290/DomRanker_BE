@@ -4,9 +4,7 @@ import { HttpCode, MainAppError } from "./utlis/MainAppError";
 import { errorHandlers } from "./utlis/OtherErrors";
 import user from "./routers/userRouter";
 import usage from "./routers/usageRouter";
-
-import os from "os";
-import axios from "axios";
+import payment from "./routers/paymentRouter";
 
 export const mainApp = (app: Application) => {
   // call all neccessary middles for this app
@@ -18,17 +16,12 @@ export const mainApp = (app: Application) => {
     //all routes
     .use("/api/user", user)
     .use("/api/usage", usage)
-    .use("/get", async (req, res) => {
-      await axios
-        .get(
-          "https://ipgeolocation.abstractapi.com/v1/?api_key=13d114e76253410796c509c40729459b",
-        )
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+    .use("/api/payment", payment)
+
+    .use("/", (req: Request, res: Response): Response => {
+      return res.status(200).json({
+        message: "Let's do this...!",
+      });
     })
 
     .get("/", (req: Request, res: Response) => {
