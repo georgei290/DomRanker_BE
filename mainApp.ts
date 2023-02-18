@@ -3,6 +3,7 @@ import cors from "cors";
 import { HttpCode, MainAppError } from "./utlis/MainAppError";
 import { errorHandlers } from "./utlis/OtherErrors";
 import user from "./routers/userRouter";
+import usage from "./routers/usageRouter";
 
 export const mainApp = (app: Application) => {
   // call all neccessary middles for this app
@@ -13,6 +14,7 @@ export const mainApp = (app: Application) => {
 
     //all routes
     .use("/api/user", user)
+    .use("/api/usage", usage)
 
     .get("/", (req: Request, res: Response) => {
       try {
