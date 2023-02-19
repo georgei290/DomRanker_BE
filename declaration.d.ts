@@ -11,3 +11,5 @@ declare module "*session";
 declare module "*cloudinary";
 declare module "*dotenv";
 declare module "*mongoose";
+declare module "*flutterwave-node-v3";
+declare module "*validator/lib/isEmail";

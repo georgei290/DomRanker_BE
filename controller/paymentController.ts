@@ -4,7 +4,10 @@ import { v4 as uuid } from "uuid";
 import userModel from "../model/userModel";
 import { asyncHandler } from "./handlers";
 import { OTPReceivedMail } from "../utlis/email";
+import Stripe from "stripe";
 dotenv.config();
+
+// const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST)
 
 const flw = new Flutterwave(
   process.env.FLW_PUBLIC_KEY_TEST,
@@ -14,7 +17,7 @@ const flw = new Flutterwave(
 //  Generating the OTP that would be sent to the USERs
 const getOTP = Math.floor(100000 + Math.random() * 900000);
 
-let reCallCharge;
+let reCallCharge: any;
 
 export const activatePlan = asyncHandler(async (req: any, res: any) => {
   try {
@@ -106,7 +109,7 @@ export const activatePlan = asyncHandler(async (req: any, res: any) => {
   }
 });
 
-export const OTPResponse = asyncHandler(async (req, res) => {
+export const OTPResponse = asyncHandler(async (req: any, res: any) => {
   try {
     const { otpData } = req.body;
     if (otpData === getOTP) {

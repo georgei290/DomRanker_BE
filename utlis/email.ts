@@ -88,7 +88,7 @@ export const verifiedUserMail = async (user: any) => {
   }
 };
 
-export const OTPReceivedMail = async (user: any, getOTP) => {
+export const OTPReceivedMail = async (user: any, getOTP: number) => {
   try {
     const accessToken = await oAuth.getAccessToken();
     const transporter = nodemailer.createTransport({

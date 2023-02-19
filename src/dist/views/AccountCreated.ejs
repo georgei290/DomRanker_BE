@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet">
+
+  <title>Account creation</title>
+</head>
+<body style="font-family: 'Poppins', sans-serif;  " >
+  <container >
+    <row>
+      <columns small="12" >
+        
+        <table class="one-column" border="0" cellpadding="0" cellspacing="0" width="100%" style="border-spacing:0; border-left:1px solid #e8e7e5; border-right:1px solid #e8e7e5; border-bottom:1px solid #e8e7e5; padding: 10px" bg="#FFFFFF">
+          
+          <div width="650px" height="250px" align="center" style="border-radius: 4px">
+           <img src="https://res.cloudinary.com/dv4dlmp4e/image/upload/v1676660247/SEO_Logo_svd1uu.png" width="250px" height="120px" style="padding-top:5px" alt="" border="0"/>
+           
+          </div>
+
+          <tr>
+            <td align="center" style="padding:0px 40px 40px 40px"><p style="color:#262626; font-size:32px; text-align:center; font-family:Poppins, Verdana, Geneva, sans-serif">Hello Friend!</p>
+                <b style="color:#000000; font-size:16px; text-align:left; line-height:22px; font-family: 'Poppins', sans-serif;  ">
+                Congratulations!!!</b><br/>
+                Thank you for coming on-board with the best SEO Optimizer Platform", 
+                <br/>Now you can track the best key words to use and grow both your business and pleasure social media channels <br/>
+                
+                <strong style="color: red; font-family: 'Poppins';">Please follow the instruction to finish up your account registration!</strong>  </br>
+                <br/>
+                <br/>
+                Use this Button below to get started, please note that you've opted in for the <strong > <%= status %> services</strong>!
+
+                <div>
+                  <br/>
+                  <br/>
+                  <a 
+                    href="<%= url %>/api/user/<%= id %>/verified-user" 
+                  referrerpolicy="no-referrer" target="_blank" 
+                  style="text-decoration: none;
+                  padding: 20px 30px;
+                  color: white;
+                  margin-top: 50px;
+                  background-color: #000269;
+                  border-radius: 2px;
+                  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+                  "
+                  >Activate now </a>
+                </div>
+          
+                <br />
+            </p></td>
+          </tr>
+        </table>
+      </columns>
+    </row>
+</container>
+</body>
+</html>
