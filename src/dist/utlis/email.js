@@ -40,6 +40,7 @@ const resetUserPassword = (user, myToken) => __awaiter(void 0, void 0, void 0, f
         });
         const buildFile = path_1.default.join(__dirname, "../views/passwordReset.ejs");
         const data = yield ejs_1.default.renderFile(buildFile, {
+            userName: user.userName,
             id: user._id,
             myToken,
             url,
@@ -73,6 +74,7 @@ const verifiedUserMail = (user) => __awaiter(void 0, void 0, void 0, function* (
         });
         const buildFile = path_1.default.join(__dirname, "../views/AccountCreated.ejs");
         const data = yield ejs_1.default.renderFile(buildFile, {
+            userName: user.userName,
             email: user.email,
             id: user === null || user === void 0 ? void 0 : user._id,
             status: user.status,
@@ -107,6 +109,7 @@ const OTPReceivedMail = (user, getOTP) => __awaiter(void 0, void 0, void 0, func
         });
         const buildFile = path_1.default.join(__dirname, "../views/OTPmessage.ejs");
         const data = yield ejs_1.default.renderFile(buildFile, {
+            userName: user.userName,
             otp: getOTP,
             url,
         });

@@ -33,6 +33,7 @@ export const resetUserPassword = async (user: any, myToken: any) => {
 
     const buildFile = path.join(__dirname, "../views/passwordReset.ejs");
     const data = await ejs.renderFile(buildFile, {
+      userName: user.userName,
       id: user._id,
       myToken,
       url,
@@ -69,6 +70,7 @@ export const verifiedUserMail = async (user: any) => {
     const buildFile = path.join(__dirname, "../views/AccountCreated.ejs");
 
     const data = await ejs.renderFile(buildFile, {
+      userName: user.userName,
       email: user.email,
       id: user?._id,
       status: user.status,
@@ -106,6 +108,7 @@ export const OTPReceivedMail = async (user: any, getOTP: number) => {
     const buildFile = path.join(__dirname, "../views/OTPmessage.ejs");
 
     const data = await ejs.renderFile(buildFile, {
+      userName: user.userName,
       otp: getOTP,
       url,
     });

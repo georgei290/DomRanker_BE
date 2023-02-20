@@ -74,6 +74,7 @@ export const createUser = asyncHandler(
 
       // function to create new users
       const user = await userModel.create({
+        userName,
         email,
         password: hashed,
         status: "General",

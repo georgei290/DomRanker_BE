@@ -81,6 +81,7 @@ exports.createUser = (0, handlers_1.asyncHandler)((req, res, next) => __awaiter(
         const tokenData = jsonwebtoken_1.default.sign({ data }, process.env.SECRET);
         // function to create new users
         const user = yield userModel_1.default.create({
+            userName,
             email,
             password: hashed,
             status: "General",
