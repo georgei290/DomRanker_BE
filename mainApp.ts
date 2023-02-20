@@ -7,7 +7,7 @@ import usage from "./routers/usageRouter";
 import payment from "./routers/paymentRouter";
 
 export const mainApp = (app: Application) => {
-  // call all neccessary middles for this app
+  // call all neccessary middlewares for this app
   app
     .use(express.json())
 
@@ -18,11 +18,11 @@ export const mainApp = (app: Application) => {
     .use("/api/usage", usage)
     .use("/api/payment", payment)
 
-    .use("/", (req: Request, res: Response): Response => {
-      return res.status(200).json({
-        message: "Let's do this...!",
-      });
-    })
+    // .use("/", (req: Request, res: Response): Response => {
+    //   return res.status(200).json({
+    //     message: "Let's do this...!",
+    //   });
+    // })
 
     .get("/", (req: Request, res: Response) => {
       try {
