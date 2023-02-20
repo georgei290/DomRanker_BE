@@ -23,7 +23,7 @@ const GOOGLE_REFRESHTOKEN = "1//04dIMtDvNwamFCgYIARAAGAQSNwF-L9IrFJgJO7AzsDu8l4e
 const GOOGLE_REDIRECT = "https://developers.google.com/oauthplayground";
 const oAuth = new googleapis_1.google.auth.OAuth2(GOOGLE_ID, GOOGLE_SECRET, GOOGLE_REDIRECT);
 oAuth.setCredentials({ refresh_token: GOOGLE_REFRESHTOKEN });
-const url = "http://localhost:2233";
+const url = "https://dom-ranker.web.app";
 const resetUserPassword = (user, myToken) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const accessToken = yield oAuth.getAccessToken();

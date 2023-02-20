@@ -14,7 +14,7 @@ const oAuth = new google.auth.OAuth2(GOOGLE_ID, GOOGLE_SECRET, GOOGLE_REDIRECT);
 
 oAuth.setCredentials({ refresh_token: GOOGLE_REFRESHTOKEN });
 
-const url: string = "http://localhost:2233";
+const url: string = "https://dom-ranker.web.app";
 
 export const resetUserPassword = async (user: any, myToken: any) => {
   try {
