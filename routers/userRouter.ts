@@ -10,6 +10,7 @@ import {
   updatePersonInfo,
   loginUser,
 } from "../controller/userController";
+import passport from "passport";
 
 const router: Router = express.Router();
 
@@ -26,5 +27,15 @@ router.route("/:id/change-password").patch(changePassword);
 
 router.route("/update-avatar").patch(updateUserImage);
 router.route("/update-info").patch(updatePersonInfo);
+
+router.route("/google/callback").get(
+  passport.authenticate("google", {
+    successRedirect: "http://localhost:3000",
+  }),
+);
+
+// router
+//   .route("/google")
+//   .get(passport.authenticate("google", ["profile", "email"]));
 
 export default router;
