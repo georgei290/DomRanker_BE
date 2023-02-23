@@ -4,7 +4,9 @@ import {
   getBingKeywords,
   getGoogleKeywords,
   getYahooKeywords,
-  gettingBaiduKeywords,
+  gettBacklinkSummary,
+  getBusinessData,
+  getBusinessDataInfo,
   // starterPlan
 } from "../controller/usageController";
 
@@ -15,6 +17,12 @@ router.route("/:id/get-google-search").post(getGoogleKeywords);
 router.route("/:id/get-bing-search").post(getBingKeywords);
 router.route("/:id/get-yahoo-search").post(getYahooKeywords);
 router.route("/:id/get-baidu-search").post(getBaiduKeywords);
-router.route("/:id/get-the-baidu-search/:dataID").get(gettingBaiduKeywords);
+router.route("/:id/backlink-summary-search").post(gettBacklinkSummary);
+
+// BusinessData API Call
+router.route("/:id/business-data-search").post(getBusinessData);
+router.route("/:id/business-data-info").post(getBusinessDataInfo);
+
+//
 
 export default router;
