@@ -11,20 +11,24 @@ const OtherErrors_1 = require("./utlis/OtherErrors");
 const userRouter_1 = __importDefault(require("./routers/userRouter"));
 const usageRouter_1 = __importDefault(require("./routers/usageRouter"));
 const paymentRouter_1 = __importDefault(require("./routers/paymentRouter"));
+const cookie_session_1 = __importDefault(require("cookie-session"));
+const passport_1 = __importDefault(require("passport"));
 const mainApp = (app) => {
     // call all neccessary middlewares for this app
     app
         .use(express_1.default.json())
         .use((0, cors_1.default)({ origin: "*" }))
+        .use((0, cookie_session_1.default)({
+        name: "session",
+        keys: ["DOMRANKER"],
+        maxAge: 24 * 60 * 60 * 100,
+    }))
+        .use(passport_1.default.initialize())
+        .use(passport_1.default.session())
         //all routes
         .use("/api/user", userRouter_1.default)
         .use("/api/usage", usageRouter_1.default)
         .use("/api/payment", paymentRouter_1.default)
-        // .use("/", (req: Request, res: Response): Response => {
-        //   return res.status(200).json({
-        //     message: "Let's do this...!",
-        //   });
-        // })
         .get("/", (req, res) => {
         try {
             return res.status(200).json({

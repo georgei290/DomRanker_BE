@@ -13,3 +13,5 @@ declare module "*dotenv";
 declare module "*mongoose";
 declare module "*flutterwave-node-v3";
 declare module "*validator/lib/isEmail";
+declare module "*passport";
+declare module "*passport-google-oauth20";

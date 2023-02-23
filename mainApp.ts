@@ -5,6 +5,8 @@ import { errorHandlers } from "./utlis/OtherErrors";
 import user from "./routers/userRouter";
 import usage from "./routers/usageRouter";
 import payment from "./routers/paymentRouter";
+import cookieSession from "cookie-session";
+import passport from "passport";
 
 export const mainApp = (app: Application) => {
   // call all neccessary middlewares for this app
@@ -13,16 +15,21 @@ export const mainApp = (app: Application) => {
 
     .use(cors({ origin: "*" }))
 
+    .use(
+      cookieSession({
+        name: "session",
+        keys: ["DOMRANKER"],
+        maxAge: 24 * 60 * 60 * 100,
+      }),
+    )
+
+    .use(passport.initialize())
+    .use(passport.session())
+
     //all routes
     .use("/api/user", user)
     .use("/api/usage", usage)
     .use("/api/payment", payment)
-
-    // .use("/", (req: Request, res: Response): Response => {
-    //   return res.status(200).json({
-    //     message: "Let's do this...!",
-    //   });
-    // })
 
     .get("/", (req: Request, res: Response) => {
       try {
