@@ -23,5 +23,8 @@ router.route("/:id/backlink-summary-search").post(usageController_1.gettBacklink
 // BusinessData API Call
 router.route("/:id/business-data-search").post(usageController_1.postBusinessInfo);
 router.route("/:id/:myID/business-data-search").get(usageController_1.getBusinessInfo);
+// onPage API Call
+router.route("/:id/on-page-search").post(usageController_1.postOnPagesData);
+router.route("/:id/read-on-page-search").post(usageController_1.getOnPagesData);
 // 
 exports.default = router;
