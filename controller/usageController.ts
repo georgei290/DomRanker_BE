@@ -10,12 +10,12 @@ interface iData {
 	country: string;
 	continent: string;
 }
-
+// GOOGLE SEO
 export const getGoogleKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
-			console.log("Starting");
+
 			// Search has to be location base to get the best of Result
 
 			//   getting user's location
@@ -85,6 +85,7 @@ export const getGoogleKeywords = asyncHandler(
 	},
 );
 
+// BING SEO
 export const getBingKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
@@ -159,6 +160,7 @@ export const getBingKeywords = asyncHandler(
 	},
 );
 
+// YAHOO SEO
 export const getYahooKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
@@ -233,8 +235,10 @@ export const getYahooKeywords = asyncHandler(
 	},
 );
 
-export const getBaiduKeywords = asyncHandler(
-	async (req: Request, res: Response): Promise<Response> => {
+// BAUIDU SEO: Has a two call system to show the results
+// First to request for the search result
+export const postBaiduKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
 
@@ -263,7 +267,7 @@ export const getBaiduKeywords = asyncHandler(
 				{
 					// language_name,
 					// location_name,
-					// keyword: keywords,
+
 					language_code: "zh_CN",
 					location_code: 2156,
 					keyword: "albert einstein",
@@ -275,8 +279,8 @@ export const getBaiduKeywords = asyncHandler(
 			];
 
 			if (user) {
-				//  getting user's searched result
-				const mainURL = `${process.env.BAIDU_URL!}/task_post`;
+				//  getting business's searched result
+				const mainURL = `${process.env.BAIDU_URL}/task_post`;
 				return await axios({
 					method: "post",
 					url: mainURL,
@@ -289,43 +293,319 @@ export const getBaiduKeywords = asyncHandler(
 						"content-type": "application/json",
 					},
 				})
-					.then(async function (response) {
+					.then(function (response) {
+						console.log("getting results: ");
 						var result = response["data"]["tasks"];
 						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+// Secondly to get/view the requested search result
+export const getBaiduKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
 
-						const mainURL = `${process.env.BAIDU_URL!}/task_get/regular/${
-							result[0].id
-						}`;
-						return await axios({
-							method: "get",
-							url: mainURL!,
-							auth: {
-								username: process.env.LOGIN_ID!,
-								password: process.env.LOGIN_KEY!,
-							},
-							// data: searchedData,
-							headers: {
-								"content-type": "application/json",
-							},
-						})
-							.then(function (response) {
-								var newResult = response["data"]["tasks"];
-								// newResult data
-								console.log("Reading the GET DATA: ", response);
-								console.log(" ");
-								console.log("READING DATA: ", newResult);
-								return res.status(200).json({
-									message: "seen",
-									data: newResult,
-								});
-							})
-							.catch(function (error) {
-								console.log(error);
-								return res.status(200).json({
-									message: "seen",
-									data: error,
-								});
-							});
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `${process.env.BAIDU_URL}/task_get/advanced/${req.params.myIDs}`;
+				return await axios({
+					method: "get",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response) {
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+
+// NAVER SEO: Has a two call system to show the results
+// First to request for the search result
+export const postNaverKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			let myLocationData = {} as iData;
+
+			// Search has to be location base to get the best of Result
+
+			//   getting user's location
+			await axios
+				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.then((response) => {
+					myLocationData = response.data;
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+
+			let language_name = "English (United Kingdom)";
+			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
+
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
+
+			//    getting user's search words
+			const { keywords } = req.body;
+
+			let searchedData = [
+				{
+					// language_name,
+					// location_name,
+
+					language_code: "zh_CN",
+					location_code: 2156,
+					keyword: keywords,
+					device: "desktop",
+					tag: "some_string_123",
+					postback_url: "https://your-server.com/postbackscript.php",
+					postback_data: "regular",
+				},
+			];
+
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `${process.env.NAVER_URL}/task_post`;
+				return await axios({
+					method: "post",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					data: searchedData,
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response) {
+						console.log("getting results: ");
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+// Secondly to get/view the requested search result
+export const getNaverKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
+
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `${process.env.NAVER_URL}/task_get/regular/${req.params.myIDs}`;
+				return await axios({
+					method: "get",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response) {
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+
+// SEZNAM SEO: Has a two call system to show the results
+// First to request for the search result
+export const postSeznamKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			let myLocationData = {} as iData;
+
+			// Search has to be location base to get the best of Result
+
+			//   getting user's location
+			await axios
+				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.then((response) => {
+					myLocationData = response.data;
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+
+			let language_name = "English (United Kingdom)";
+			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
+
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
+
+			//    getting user's search words
+			const { keywords } = req.body;
+
+			let searchedData = [
+				{
+					// language_name,
+					// location_name,
+
+					language_code: "en",
+					location_name,
+					keyword: keywords,
+					postback_data: "regular",
+				},
+			];
+
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `${process.env.SEZNAM_URL}/task_post`;
+				return await axios({
+					method: "post",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					data: searchedData,
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response) {
+						console.log("getting results: ");
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+// Secondly to get/view the requested search result
+export const getSeznamKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
+
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `${process.env.SEZNAM_URL}/task_get/advanced/${req.params.myIDs}`;
+				return await axios({
+					method: "get",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response) {
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
 					})
 					.catch(function (error) {
 						console.log(error);
@@ -410,11 +690,10 @@ export const gettBacklinkSummary = asyncHandler(
 	},
 );
 
-//  Business Data
+//  Business Data API
 
-//  Business Data Review
-export const getBusinessData = asyncHandler(
-	async (req: Request, res: Response): Promise<Response> => {
+export const postBusinessInfo = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
 
@@ -441,15 +720,15 @@ export const getBusinessData = asyncHandler(
 
 			let searchedData = [
 				{
-					// language_name,
-					// location_name,
-					// keyword: keywords
+					language_code: "en",
+					location_name,
+					keyword: keywords,
 				},
 			];
 
 			if (user) {
-				//  getting user's searched result
-				const mainURL = `${process.env.BACKLINK_SUMMARY_URL!}/task_post`;
+				//  getting business's searched result
+				const mainURL = `${process.env.BUSINESS_INFO_URL}/task_post`;
 				return await axios({
 					method: "post",
 					url: mainURL,
@@ -462,43 +741,14 @@ export const getBusinessData = asyncHandler(
 						"content-type": "application/json",
 					},
 				})
-					.then(async function (response) {
+					.then(function (response) {
+						console.log("getting results: ");
 						var result = response["data"]["tasks"];
 						// Result data
-						// /task_get/05211333-2692-0298-0000-047fc45592ce
-						const mainURL = `${process.env.BACKLINK_SUMMARY_URL!}/task_get/${
-							result[0].id
-						}`;
-						return await axios({
-							method: "get",
-							url: mainURL!,
-							auth: {
-								username: process.env.LOGIN_ID!,
-								password: process.env.LOGIN_KEY!,
-							},
-							// data: searchedData,
-							headers: {
-								"content-type": "application/json",
-							},
-						})
-							.then(function (response) {
-								var newResult = response["data"]["tasks"];
-								// newResult data
-								console.log("Reading the GET DATA: ", response);
-								console.log(" ");
-								console.log("READING DATA: ", newResult);
-								return res.status(200).json({
-									message: "seen",
-									data: newResult,
-								});
-							})
-							.catch(function (error) {
-								console.log(error);
-								return res.status(200).json({
-									message: "seen",
-									data: error,
-								});
-							});
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
 					})
 					.catch(function (error) {
 						console.log(error);
@@ -518,9 +768,8 @@ export const getBusinessData = asyncHandler(
 	},
 );
 
-// Business Info
-export const getBusinessDataInfo = asyncHandler(
-	async (req: Request, res: Response): Promise<Response> => {
+export const getBusinessInfo = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
 
@@ -547,74 +796,33 @@ export const getBusinessDataInfo = asyncHandler(
 
 			let searchedData = [
 				{
-					// language_name,
-					// location_name,
-					// keyword: keywords
-					language_code: "en",
-					location_name: "New York,New York,United States",
-					keyword: "New York, Inc.",
+					language_name,
+					location_name,
+					keyword: keywords,
 				},
 			];
 
 			if (user) {
-				//  getting user's searched result
-				// const mainURL = `${process.env.BACKLINK_SUMMARY_URL!}/task_post`;
-
-				const mainURL = `https://api.dataforseo.com/v3/business_data/google/my_business_info/task_post`;
-
+				//  getting business's searched result
+				const mainURL = `${process.env.BUSINESS_INFO_URL}/task_get/${req.params.myID}`;
 				return await axios({
-					method: "post",
+					method: "get",
 					url: mainURL,
 					auth: {
 						username: process.env.LOGIN_ID!,
 						password: process.env.LOGIN_KEY!,
 					},
-					data: searchedData,
 					headers: {
 						"content-type": "application/json",
 					},
 				})
-					.then(async function (response) {
+					.then(function (response) {
 						var result = response["data"]["tasks"];
 						// Result data
-						// /task_get/05211333-2692-0298-0000-047fc45592ce 09171517-0696-0242-0000-a96bc1ad0bce
-						console.log("Before Reading the GET DATA: ", result[0].id);
-						const mainURL = `https://api.dataforseo.com/v3/business_data/google/my_business_info/task_get/${result[0].id}`;
-						// const mainURL = `${process.env.BACKLINK_SUMMARY_URL!}/task_get/${
-						//   result[0].id
-						//   }`;
-
-						return await axios({
-							method: "get",
-							url: mainURL!,
-							auth: {
-								username: process.env.LOGIN_ID!,
-								password: process.env.LOGIN_KEY!,
-							},
-							// data: searchedData,
-							headers: {
-								"content-type": "application/json",
-							},
-						})
-							.then(function (response) {
-								var newResult = response["data"]["tasks"];
-								// newResult data
-								console.log("Reading the GET DATA: ", result[0].id);
-								console.log(" ");
-								console.log("READING DATA: ", newResult);
-
-								return res.status(200).json({
-									message: "seen",
-									data: newResult,
-								});
-							})
-							.catch(function (error) {
-								console.log(error);
-								return res.status(200).json({
-									message: "seen",
-									data: error,
-								});
-							});
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
 					})
 					.catch(function (error) {
 						console.log(error);
@@ -633,8 +841,123 @@ export const getBusinessDataInfo = asyncHandler(
 		}
 	},
 );
-// Business Review
-export const getBusinessDataReview = asyncHandler(
+
+//  onPages API
+
+export const postOnPagesData = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			// Search has to be location base to get the best of Result
+
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
+
+			//    getting user's search words
+			const { word } = req.body;
+			console.log("New Data Search");
+			let searchedData = [
+				{
+					target: "dataforseo.com",
+					max_crawl_pages: 10,
+				},
+			];
+
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `https://api.dataforseo.com/v3/on_page/task_post`;
+				console.log(mainURL);
+
+				return await axios({
+					method: "post",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					data: searchedData,
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(async function (response) {
+						var result = response["data"]["tasks"];
+
+						// Result data
+						console.log(result[0].id);
+						console.log(result);
+
+						// return res.status(200).json({
+						//   message: "seen",
+						//   data: result,
+						// });
+
+						const { dataID } = req.body;
+
+						let searchedData = [
+							{
+								id: result[0].id,
+								filters: [
+									["resource_type", "=", "html"],
+									"and",
+									["meta.scripts_count", ">", 40],
+								],
+								order_by: ["meta.content.plain_text_word_count,desc"],
+								limit: 10,
+							},
+						];
+
+						const mainURL = `${process.env.ONPAGE_URL}/pages`;
+						return await axios({
+							method: "post",
+							url: mainURL,
+							auth: {
+								username: process.env.LOGIN_ID!,
+								password: process.env.LOGIN_KEY!,
+							},
+							data: searchedData,
+							headers: {
+								"content-type": "application/json",
+							},
+						})
+							.then(function (response) {
+								var myresult = response["data"]["tasks"];
+								// Result data
+
+								console.log(result[0].id);
+								console.log(result);
+
+								return res.status(200).json({
+									message: "seen",
+									data: result,
+								});
+							})
+							.catch(function (error) {
+								console.log(error);
+								return res.status(200).json({
+									message: "seen",
+									data: error,
+								});
+							});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "Error",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+
+export const getOnPagesData = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
@@ -658,25 +981,24 @@ export const getBusinessDataReview = asyncHandler(
 			const user = await userModel.findById(req.params.id);
 
 			//    getting user's search words
-			const { keywords } = req.body;
+			const { dataID } = req.body;
 
 			let searchedData = [
 				{
-					// language_name,
-					// location_name,
-					// keyword: keywords
-					language_code: "en",
-					location_name: "New York,New York,United States",
-					keyword: "New York, Inc.",
+					id: dataID,
+					filters: [
+						["resource_type", "=", "html"],
+						"and",
+						["meta.scripts_count", ">", 40],
+					],
+					order_by: ["meta.content.plain_text_word_count,desc"],
+					limit: 10,
 				},
 			];
 
 			if (user) {
-				//  getting user's searched result
-				// const mainURL = `${process.env.BACKLINK_SUMMARY_URL!}/task_post`;
-
-				const mainURL = `https://api.dataforseo.com/v3/business_data/google/my_business_info/task_post`;
-
+				//  getting business's searched result
+				const mainURL = `${process.env.ONPAGE_URL}/pages`;
 				return await axios({
 					method: "post",
 					url: mainURL,
@@ -689,47 +1011,13 @@ export const getBusinessDataReview = asyncHandler(
 						"content-type": "application/json",
 					},
 				})
-					.then(async function (response) {
+					.then(function (response) {
 						var result = response["data"]["tasks"];
 						// Result data
-						// /task_get/05211333-2692-0298-0000-047fc45592ce 09171517-0696-0242-0000-a96bc1ad0bce
-						console.log("Before Reading the GET DATA: ", result[0].id);
-						const mainURL = `https://api.dataforseo.com/v3/business_data/google/my_business_info/task_get/${result[0].id}`;
-						// const mainURL = `${process.env.BACKLINK_SUMMARY_URL!}/task_get/${
-						//   result[0].id
-						//   }`;
-
-						return await axios({
-							method: "get",
-							url: mainURL!,
-							auth: {
-								username: process.env.LOGIN_ID!,
-								password: process.env.LOGIN_KEY!,
-							},
-							// data: searchedData,
-							headers: {
-								"content-type": "application/json",
-							},
-						})
-							.then(function (response) {
-								var newResult = response["data"]["tasks"];
-								// newResult data
-								console.log("Reading the GET DATA: ", result[0].id);
-								console.log(" ");
-								console.log("READING DATA: ", newResult);
-
-								return res.status(200).json({
-									message: "seen",
-									data: newResult,
-								});
-							})
-							.catch(function (error) {
-								console.log(error);
-								return res.status(200).json({
-									message: "seen",
-									data: error,
-								});
-							});
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
 					})
 					.catch(function (error) {
 						console.log(error);
