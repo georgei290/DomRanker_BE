@@ -810,51 +810,9 @@ exports.postOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
                     // Result data
                     console.log(result[0].id);
                     console.log(result);
-                    // return res.status(200).json({
-                    //   message: "seen",
-                    //   data: result,
-                    // });
-                    const { dataID } = req.body;
-                    let searchedData = [
-                        {
-                            id: dataID,
-                            // filters: [
-                            //   ["resource_type", "=", "html"],
-                            //   "and",
-                            //   ["meta.description", "like", "%OnPage%"],
-                            // ],
-                            limit: 3,
-                        },
-                    ];
-                    const mainURL = `${process.env.ONPAGE_URL}/pages`;
-                    return yield (0, axios_1.default)({
-                        method: "post",
-                        url: mainURL,
-                        auth: {
-                            username: process.env.LOGIN_ID,
-                            password: process.env.LOGIN_KEY,
-                        },
-                        data: searchedData,
-                        headers: {
-                            "content-type": "application/json",
-                        },
-                    })
-                        .then(function (response) {
-                        var result = response["data"]["tasks"];
-                        // Result data
-                        console.log(result[0].id);
-                        console.log(result);
-                        return res.status(200).json({
-                            message: "seen",
-                            data: result,
-                        });
-                    })
-                        .catch(function (error) {
-                        console.log(error);
-                        return res.status(200).json({
-                            message: "seen",
-                            data: error,
-                        });
+                    return res.status(200).json({
+                        message: "seen",
+                        data: result,
                     });
                 });
             })
@@ -889,23 +847,22 @@ exports.getOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
             .catch((error) => {
             console.log(error);
         });
-        let language_name = "English (United Kingdom)";
-        let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { dataID } = req.body;
-        // let searchedData = [
-        //   {
-        //     id: dataID,
-        //     filters: [
-        //       ["resource_type", "=", "html"],
-        //       "and",
-        //       ["meta.description", "like", "%OnPage%"],
-        //     ],
-        //     limit: 3,
-        //   },
-        // ];
+        let searchedData = [
+            {
+                id: dataID,
+                filters: [
+                    ["resource_type", "=", "html"],
+                    "and",
+                    ["meta.scripts_count", ">", 40],
+                ],
+                order_by: ["meta.content.plain_text_word_count,desc"],
+                limit: 10,
+            },
+        ];
         if (user) {
             //  getting business's searched result
             const mainURL = `${process.env.ONPAGE_URL}/pages`;
@@ -916,7 +873,7 @@ exports.getOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
                     username: process.env.LOGIN_ID,
                     password: process.env.LOGIN_KEY,
                 },
-                data: dataID,
+                data: searchedData,
                 headers: {
                     "content-type": "application/json",
                 },
