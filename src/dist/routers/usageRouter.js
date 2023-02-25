@@ -10,10 +10,21 @@ const router = express_1.default.Router();
 router.route("/:id/get-google-search").post(usageController_1.getGoogleKeywords);
 router.route("/:id/get-bing-search").post(usageController_1.getBingKeywords);
 router.route("/:id/get-yahoo-search").post(usageController_1.getYahooKeywords);
-router.route("/:id/get-baidu-search").post(usageController_1.getBaiduKeywords);
+// BAIDU
+router.route("/:id/get-baidu-search").post(usageController_1.postBaiduKeywords);
+router.route("/:id/:myIDs/get-baidu-search").get(usageController_1.getBaiduKeywords);
+// NAVER
+router.route("/:id/get-naver-search").post(usageController_1.postNaverKeywords);
+router.route("/:id/:myIDs/get-naver-search").get(usageController_1.getNaverKeywords);
+// SEZNAM
+router.route("/:id/get-seznam-search").post(usageController_1.postSeznamKeywords);
+router.route("/:id/:myIDs/get-seznam-search").get(usageController_1.getSeznamKeywords);
 router.route("/:id/backlink-summary-search").post(usageController_1.gettBacklinkSummary);
 // BusinessData API Call
-router.route("/:id/business-data-search").post(usageController_1.getBusinessData);
-router.route("/:id/business-data-info").post(usageController_1.getBusinessDataInfo);
+router.route("/:id/business-data-search").post(usageController_1.postBusinessInfo);
+router.route("/:id/:myID/business-data-search").get(usageController_1.getBusinessInfo);
+// onPage API Call
+router.route("/:id/on-page-search").post(usageController_1.postOnPagesData);
+router.route("/:id/read-on-page-search").post(usageController_1.getOnPagesData);
 //
 exports.default = router;
