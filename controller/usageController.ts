@@ -47,7 +47,7 @@ export const getGoogleKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name: "Lagos,Nigeria",
+          location_name: location_name,
           keyword: keywords,
         },
       ];
