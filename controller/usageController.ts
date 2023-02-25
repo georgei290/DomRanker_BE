@@ -902,7 +902,7 @@ export const postOnPagesData = asyncHandler(
 									["meta.scripts_count", ">", 40],
 								],
 								order_by: ["meta.content.plain_text_word_count,desc"],
-								limit: 10,
+								limit: 3,
 							},
 						];
 
@@ -992,7 +992,7 @@ export const getOnPagesData = asyncHandler(
 						["meta.scripts_count", ">", 40],
 					],
 					order_by: ["meta.content.plain_text_word_count,desc"],
-					limit: 10,
+					limit: 3,
 				},
 			];
 
