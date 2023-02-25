@@ -37,6 +37,7 @@ export const getGoogleKeywords = asyncHandler(
       let language_name = "English (United Kingdom)";
       let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
+      console.log("Location: ", location_name);
       //   checking for the validity of a user
       const user = await userModel.findById(req.params.id);
 
@@ -46,7 +47,7 @@ export const getGoogleKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name,
+          location_name: "Lagos,Nigeria",
           keyword: keywords,
         },
       ];

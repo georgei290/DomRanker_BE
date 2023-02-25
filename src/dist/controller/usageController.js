@@ -36,6 +36,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        console.log("Location: ", location_name);
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -43,7 +44,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         let searchedData = [
             {
                 language_name,
-                location_name,
+                location_name: "Lagos,Nigeria",
                 keyword: keywords,
             },
         ];
