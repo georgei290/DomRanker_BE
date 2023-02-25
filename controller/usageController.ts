@@ -13,8 +13,7 @@ interface iData {
 
 const LOCATION_KEY = "13d114e76253410796c509c40729459b"
 const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?"
-
-
+const mainLocation = "Lagos,Nigeria";
 
 // GOOGLE SEO
 export const getGoogleKeywords = asyncHandler(
@@ -47,7 +46,7 @@ export const getGoogleKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name: location_name || "Lagos,Nigeria",
+          location_name: mainLocation,
           keyword: keywords,
         },
       ];
@@ -122,7 +121,7 @@ export const getBingKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name,
+          location_name:mainLocation,
           keyword: keywords,
         },
       ];
@@ -197,7 +196,7 @@ export const getYahooKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name,
+          location_name:mainLocation,
           keyword: keywords,
         },
       ];

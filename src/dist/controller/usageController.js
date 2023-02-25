@@ -20,6 +20,7 @@ const handlers_1 = require("./handlers");
 dotenv_1.default.config();
 const LOCATION_KEY = "13d114e76253410796c509c40729459b";
 const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
+const mainLocation = "Lagos,Nigeria";
 // GOOGLE SEO
 exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -44,7 +45,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         let searchedData = [
             {
                 language_name,
-                location_name: location_name || "Lagos,Nigeria",
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];
@@ -111,7 +112,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
         let searchedData = [
             {
                 language_name,
-                location_name,
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];
@@ -178,7 +179,7 @@ exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(
         let searchedData = [
             {
                 language_name,
-                location_name,
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];
