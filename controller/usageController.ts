@@ -10,6 +10,12 @@ interface iData {
   country: string;
   continent: string;
 }
+
+const LOCATION_KEY = "13d114e76253410796c509c40729459b"
+const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?"
+
+
+
 // GOOGLE SEO
 export const getGoogleKeywords = asyncHandler(
   async (req: Request, res: Response): Promise<Response> => {
@@ -20,7 +26,7 @@ export const getGoogleKeywords = asyncHandler(
 
       //   getting user's location
       await axios
-        .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+        .get(`${LOCATION}api_key=${LOCATION_KEY}`)
         .then((response) => {
           myLocationData = response.data;
         })
@@ -95,7 +101,7 @@ export const getBingKeywords = asyncHandler(
 
       //   getting user's location
       await axios
-        .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+        .get(`${LOCATION}api_key=${LOCATION_KEY}`)
         .then((response) => {
           myLocationData = response.data;
         })
@@ -170,7 +176,7 @@ export const getYahooKeywords = asyncHandler(
 
       //   getting user's location
       await axios
-        .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+        .get(`${LOCATION}api_key=${LOCATION_KEY}`)
         .then((response) => {
           myLocationData = response.data;
         })
@@ -246,7 +252,7 @@ export const postBaiduKeywords = asyncHandler(
 
       //   getting user's location
       await axios
-        .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+        .get(`${LOCATION}api_key=${LOCATION_KEY}`)
         .then((response) => {
           myLocationData = response.data;
         })
@@ -254,7 +260,6 @@ export const postBaiduKeywords = asyncHandler(
           console.log(error);
         });
 
-      let language_name = "English (United Kingdom)";
       let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
       //   checking for the validity of a user
@@ -265,15 +270,9 @@ export const postBaiduKeywords = asyncHandler(
 
       let searchedData = [
         {
-          // language_name,
-          // location_name,
-
-          language_code: "zh_CN",
-          location_code: 2156,
-          keyword: "albert einstein",
-          device: "desktop",
-          tag: "some_string_123",
-          postback_url: "https://your-server.com/postbackscript.php",
+          language_code: "en",
+          location_name,
+          keyword: keywords,
           postback_data: "regular",
         },
       ];
@@ -396,15 +395,10 @@ export const postNaverKeywords = asyncHandler(
 
       let searchedData = [
         {
-          // language_name,
-          // location_name,
 
-          language_code: "zh_CN",
-          location_code: 2156,
+          language_code: "en",
+          location_name,
           keyword: keywords,
-          device: "desktop",
-          tag: "some_string_123",
-          postback_url: "https://your-server.com/postbackscript.php",
           postback_data: "regular",
         },
       ];
@@ -508,7 +502,7 @@ export const postSeznamKeywords = asyncHandler(
 
       //   getting user's location
       await axios
-        .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+        .get(`${LOCATION}api_key=${LOCATION_KEY}`)
         .then((response) => {
           myLocationData = response.data;
         })
@@ -527,9 +521,6 @@ export const postSeznamKeywords = asyncHandler(
 
       let searchedData = [
         {
-          // language_name,
-          // location_name,
-
           language_code: "en",
           location_name,
           keyword: keywords,
