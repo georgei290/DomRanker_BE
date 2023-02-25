@@ -935,13 +935,13 @@ export const getOnPagesData = asyncHandler(
       let searchedData = [
         {
           id: dataID,
-					filters: [
-						["resource_type", "=", "html"],
-						"and",
-						["meta.scripts_count", ">", 40],
-					],
-					order_by: ["meta.content.plain_text_word_count,desc"],
-					limit: 10,
+          filters: [
+            ["resource_type", "=", "html"],
+            "and",
+            ["meta.scripts_count", ">", 40],
+          ],
+          order_by: ["meta.content.plain_text_word_count,desc"],
+          limit: 10,
         },
       ];
 
