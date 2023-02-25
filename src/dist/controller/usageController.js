@@ -44,7 +44,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         let searchedData = [
             {
                 language_name,
-                location_name: "Lagos,Nigeria",
+                location_name: location_name,
                 keyword: keywords,
             },
         ];
