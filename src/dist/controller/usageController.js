@@ -18,6 +18,8 @@ const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const handlers_1 = require("./handlers");
 dotenv_1.default.config();
+const LOCATION_KEY = "13d114e76253410796c509c40729459b";
+const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
 // GOOGLE SEO
 exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -25,7 +27,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         // Search has to be location base to get the best of Result
         //   getting user's location
         yield axios_1.default
-            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .get(`${LOCATION}api_key=${LOCATION_KEY}`)
             .then((response) => {
             myLocationData = response.data;
         })
@@ -92,7 +94,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
         // Search has to be location base to get the best of Result
         //   getting user's location
         yield axios_1.default
-            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .get(`${LOCATION}api_key=${LOCATION_KEY}`)
             .then((response) => {
             myLocationData = response.data;
         })
@@ -159,7 +161,7 @@ exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(
         // Search has to be location base to get the best of Result
         //   getting user's location
         yield axios_1.default
-            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .get(`${LOCATION}api_key=${LOCATION_KEY}`)
             .then((response) => {
             myLocationData = response.data;
         })
@@ -227,14 +229,13 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         // Search has to be location base to get the best of Result
         //   getting user's location
         yield axios_1.default
-            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .get(`${LOCATION}api_key=${LOCATION_KEY}`)
             .then((response) => {
             myLocationData = response.data;
         })
             .catch((error) => {
             console.log(error);
         });
-        let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
@@ -242,14 +243,9 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         const { keywords } = req.body;
         let searchedData = [
             {
-                // language_name,
-                // location_name,
-                language_code: "zh_CN",
-                location_code: 2156,
-                keyword: "albert einstein",
-                device: "desktop",
-                tag: "some_string_123",
-                postback_url: "https://your-server.com/postbackscript.php",
+                language_code: "en",
+                location_name,
+                keyword: keywords,
                 postback_data: "regular",
             },
         ];
@@ -363,14 +359,9 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         const { keywords } = req.body;
         let searchedData = [
             {
-                // language_name,
-                // location_name,
-                language_code: "zh_CN",
-                location_code: 2156,
+                language_code: "en",
+                location_name,
                 keyword: keywords,
-                device: "desktop",
-                tag: "some_string_123",
-                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
@@ -469,7 +460,7 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
         // Search has to be location base to get the best of Result
         //   getting user's location
         yield axios_1.default
-            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .get(`${LOCATION}api_key=${LOCATION_KEY}`)
             .then((response) => {
             myLocationData = response.data;
         })
@@ -484,8 +475,6 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
         const { keywords } = req.body;
         let searchedData = [
             {
-                // language_name,
-                // location_name,
                 language_code: "en",
                 location_name,
                 keyword: keywords,
