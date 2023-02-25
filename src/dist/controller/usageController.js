@@ -236,7 +236,6 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
             .catch((error) => {
             console.log(error);
         });
-        let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);

@@ -260,7 +260,6 @@ export const postBaiduKeywords = asyncHandler(
           console.log(error);
         });
 
-      let language_name = "English (United Kingdom)";
       let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
       //   checking for the validity of a user
