@@ -1,20 +1,21 @@
 import express, { Router } from "express";
 import {
-	postBaiduKeywords,
-	getBaiduKeywords,
-	getSeznamKeywords,
-	postSeznamKeywords,
-	postNaverKeywords,
-	getNaverKeywords,
-	getBingKeywords,
-	getGoogleKeywords,
-	getYahooKeywords,
-	gettBacklinkSummary,
-	postBusinessInfo,
-	getBusinessInfo,
-	postOnPagesData,
-	getOnPagesData,
-	// starterPlan
+  postBaiduKeywords,
+  getBaiduKeywords,
+  getSeznamKeywords,
+  postSeznamKeywords,
+  postNaverKeywords,
+  getNaverKeywords,
+  getBingKeywords,
+  getGoogleKeywords,
+  getYahooKeywords,
+  gettBacklinkSummary,
+  postBusinessInfo,
+  getBusinessInfo,
+  postOnPagesData,
+  getOnPagesData,
+  getTestBacklinkSummary,
+  // starterPlan
 } from "../controller/usageController";
 
 const router: Router = express.Router();
@@ -36,7 +37,9 @@ router.route("/:id/:myIDs/get-naver-search").get(getNaverKeywords);
 router.route("/:id/get-seznam-search").post(postSeznamKeywords);
 router.route("/:id/:myIDs/get-seznam-search").get(getSeznamKeywords);
 
+//  Backlink Call
 router.route("/:id/backlink-summary-search").post(gettBacklinkSummary);
+router.route("/:id/test-backlink-summary-search").post(getTestBacklinkSummary);
 
 // BusinessData API Call
 router.route("/:id/business-data-search").post(postBusinessInfo);
