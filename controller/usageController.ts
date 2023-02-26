@@ -11,8 +11,8 @@ interface iData {
   continent: string;
 }
 
-const LOCATION_KEY = "13d114e76253410796c509c40729459b"
-const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?"
+const LOCATION_KEY = "13d114e76253410796c509c40729459b";
+const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
 const mainLocation = "Lagos,Nigeria";
 
 // GOOGLE SEO
@@ -121,7 +121,7 @@ export const getBingKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name:mainLocation,
+          location_name: mainLocation,
           keyword: keywords,
         },
       ];
@@ -196,7 +196,7 @@ export const getYahooKeywords = asyncHandler(
       let searchedData = [
         {
           language_name,
-          location_name:mainLocation,
+          location_name: mainLocation,
           keyword: keywords,
         },
       ];
@@ -395,7 +395,6 @@ export const postNaverKeywords = asyncHandler(
 
       let searchedData = [
         {
-
           language_code: "en",
           location_name,
           keyword: keywords,
@@ -632,7 +631,8 @@ export const gettBacklinkSummary = asyncHandler(
 
       let searchedData = [
         {
-          target: "explodingtopics.com",
+          // target: "explodingtopics.com",
+          target: keywords,
           internal_list_limit: 10,
           include_subdomains: true,
           backlinks_filters: ["dofollow", "=", true],
@@ -643,6 +643,70 @@ export const gettBacklinkSummary = asyncHandler(
       if (user) {
         //  getting user's searched result
         const mainURL = `${process.env.BACKLINK_SUMMARY_URL}`;
+        return await axios({
+          method: "post",
+          url: mainURL,
+          auth: {
+            username: process.env.LOGIN_ID!,
+            password: process.env.LOGIN_KEY!,
+          },
+          data: searchedData,
+          headers: {
+            "content-type": "application/json",
+          },
+        })
+          .then(function (response) {
+            var result = response["data"]["tasks"];
+            // Result data
+            return res.status(200).json({
+              message: "seen",
+              data: result,
+            });
+          })
+          .catch(function (error) {
+            console.log(error);
+            return res.status(200).json({
+              message: "seen",
+              data: error,
+            });
+          });
+      } else {
+        return res.status(200).json({
+          message: "You do not have access right for this Operation",
+        });
+      }
+    } catch (error) {
+      return res.status(404).json({ message: "An Error Occur" });
+    }
+  },
+);
+export const getTestBacklinkSummary = asyncHandler(
+  async (req: Request, res: Response, dataID: string): Promise<Response> => {
+    try {
+      let myLocationData = {} as iData;
+
+      // Search has to be location base to get the best of Result
+
+      //   checking for the validity of a user
+      const user = await userModel.findById(req.params.id);
+
+      //    getting user's search words
+      const { keywords } = req.body;
+
+      let searchedData = [
+        {
+          target: "explodingtopics.com",
+          internal_list_limit: 10,
+          include_subdomains: true,
+          backlinks_filters: ["dofollow", "=", true],
+          backlinks_status_type: "all",
+        },
+      ];
+
+      if (user) {
+        //  getting user's searched result
+        const test = "https://api.dataforseo.com/v3/backlinks/summary/live";
+        const mainURL = `${test}`;
         return await axios({
           method: "post",
           url: mainURL,
@@ -712,7 +776,7 @@ export const postBusinessInfo = asyncHandler(
       let searchedData = [
         {
           language_code: "en",
-          location_name,
+          location_name: mainLocation,
           keyword: keywords,
         },
       ];

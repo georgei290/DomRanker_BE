@@ -19,7 +19,9 @@ router.route("/:id/:myIDs/get-naver-search").get(usageController_1.getNaverKeywo
 // SEZNAM
 router.route("/:id/get-seznam-search").post(usageController_1.postSeznamKeywords);
 router.route("/:id/:myIDs/get-seznam-search").get(usageController_1.getSeznamKeywords);
+//  Backlink Call
 router.route("/:id/backlink-summary-search").post(usageController_1.gettBacklinkSummary);
+router.route("/:id/test-backlink-summary-search").post(usageController_1.getTestBacklinkSummary);
 // BusinessData API Call
 router.route("/:id/business-data-search").post(usageController_1.postBusinessInfo);
 router.route("/:id/:myID/business-data-search").get(usageController_1.getBusinessInfo);
