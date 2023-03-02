@@ -10,6 +10,10 @@ interface iData {
 	country: string;
 	continent: string;
 }
+
+const LOCATION_KEY = "13d114e76253410796c509c40729459b";
+const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
+
 // GOOGLE SEO
 export const getGoogleKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
@@ -20,7 +24,7 @@ export const getGoogleKeywords = asyncHandler(
 
 			//   getting user's location
 			await axios
-				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.get(`${LOCATION}api_key=${LOCATION_KEY}`)
 				.then((response) => {
 					myLocationData = response.data;
 				})
@@ -31,6 +35,7 @@ export const getGoogleKeywords = asyncHandler(
 			let language_name = "English (United Kingdom)";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
+			console.log("Location: ", location_name);
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
 
@@ -40,7 +45,7 @@ export const getGoogleKeywords = asyncHandler(
 			let searchedData = [
 				{
 					language_name,
-					location_name,
+					location_name: location_name || "Lagos,Nigeria",
 					keyword: keywords,
 				},
 			];
@@ -95,7 +100,7 @@ export const getBingKeywords = asyncHandler(
 
 			//   getting user's location
 			await axios
-				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.get(`${LOCATION}api_key=${LOCATION_KEY}`)
 				.then((response) => {
 					myLocationData = response.data;
 				})
@@ -170,7 +175,7 @@ export const getYahooKeywords = asyncHandler(
 
 			//   getting user's location
 			await axios
-				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.get(`${LOCATION}api_key=${LOCATION_KEY}`)
 				.then((response) => {
 					myLocationData = response.data;
 				})
@@ -246,7 +251,7 @@ export const postBaiduKeywords = asyncHandler(
 
 			//   getting user's location
 			await axios
-				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.get(`${LOCATION}api_key=${LOCATION_KEY}`)
 				.then((response) => {
 					myLocationData = response.data;
 				})
@@ -254,7 +259,6 @@ export const postBaiduKeywords = asyncHandler(
 					console.log(error);
 				});
 
-			let language_name = "English (United Kingdom)";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
 			//   checking for the validity of a user
@@ -265,15 +269,9 @@ export const postBaiduKeywords = asyncHandler(
 
 			let searchedData = [
 				{
-					// language_name,
-					// location_name,
-
-					language_code: "zh_CN",
-					location_code: 2156,
-					keyword: "albert einstein",
-					device: "desktop",
-					tag: "some_string_123",
-					postback_url: "https://your-server.com/postbackscript.php",
+					language_code: "en",
+					location_name,
+					keyword: keywords,
 					postback_data: "regular",
 				},
 			];
@@ -396,15 +394,9 @@ export const postNaverKeywords = asyncHandler(
 
 			let searchedData = [
 				{
-					// language_name,
-					// location_name,
-
-					language_code: "zh_CN",
-					location_code: 2156,
+					language_code: "en",
+					location_name,
 					keyword: keywords,
-					device: "desktop",
-					tag: "some_string_123",
-					postback_url: "https://your-server.com/postbackscript.php",
 					postback_data: "regular",
 				},
 			];
@@ -508,7 +500,7 @@ export const postSeznamKeywords = asyncHandler(
 
 			//   getting user's location
 			await axios
-				.get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+				.get(`${LOCATION}api_key=${LOCATION_KEY}`)
 				.then((response) => {
 					myLocationData = response.data;
 				})
@@ -527,9 +519,6 @@ export const postSeznamKeywords = asyncHandler(
 
 			let searchedData = [
 				{
-					// language_name,
-					// location_name,
-
 					language_code: "en",
 					location_name,
 					keyword: keywords,
@@ -857,14 +846,14 @@ export const postOnPagesData = asyncHandler(
 			console.log("New Data Search");
 			let searchedData = [
 				{
-					target: "dataforseo.com",
+					target: word,
 					max_crawl_pages: 10,
 				},
 			];
 
 			if (user) {
 				//  getting business's searched result
-				const mainURL = `https://api.dataforseo.com/v3/on_page/task_post`;
+				const mainURL = `${process.env.ONPAGE_URL}/task_post`;
 				console.log(mainURL);
 
 				return await axios({
@@ -886,58 +875,10 @@ export const postOnPagesData = asyncHandler(
 						console.log(result[0].id);
 						console.log(result);
 
-						// return res.status(200).json({
-						//   message: "seen",
-						//   data: result,
-						// });
-
-						const { dataID } = req.body;
-
-						let searchedData = [
-							{
-								id: result[0].id,
-								filters: [
-									["resource_type", "=", "html"],
-									"and",
-									["meta.scripts_count", ">", 40],
-								],
-								order_by: ["meta.content.plain_text_word_count,desc"],
-								limit: 3,
-							},
-						];
-
-						const mainURL = `${process.env.ONPAGE_URL}/pages`;
-						return await axios({
-							method: "post",
-							url: mainURL,
-							auth: {
-								username: process.env.LOGIN_ID!,
-								password: process.env.LOGIN_KEY!,
-							},
-							data: searchedData,
-							headers: {
-								"content-type": "application/json",
-							},
-						})
-							.then(function (response) {
-								var myresult = response["data"]["tasks"];
-								// Result data
-
-								console.log(result[0].id);
-								console.log(result);
-
-								return res.status(200).json({
-									message: "seen",
-									data: result,
-								});
-							})
-							.catch(function (error) {
-								console.log(error);
-								return res.status(200).json({
-									message: "seen",
-									data: error,
-								});
-							});
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
 					})
 					.catch(function (error) {
 						console.log(error);
@@ -958,7 +899,7 @@ export const postOnPagesData = asyncHandler(
 );
 
 export const getOnPagesData = asyncHandler(
-	async (req: Request, res: Response): Promise<Response> => {
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
 
@@ -973,9 +914,6 @@ export const getOnPagesData = asyncHandler(
 				.catch((error) => {
 					console.log(error);
 				});
-
-			let language_name = "English (United Kingdom)";
-			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
@@ -992,7 +930,7 @@ export const getOnPagesData = asyncHandler(
 						["meta.scripts_count", ">", 40],
 					],
 					order_by: ["meta.content.plain_text_word_count,desc"],
-					limit: 3,
+					limit: 10,
 				},
 			];
 
@@ -1036,3 +974,5 @@ export const getOnPagesData = asyncHandler(
 		}
 	},
 );
+
+// Business Info

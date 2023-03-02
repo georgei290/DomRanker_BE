@@ -43,5 +43,10 @@
     "uuid": "^9.0.0",
     "uuidv4": "^6.2.13",
     "validator": "^13.9.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie-session": "^2.0.44",
+    "@types/jsonwebtoken": "^9.0.1"
   }
 }
