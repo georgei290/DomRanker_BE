@@ -245,9 +245,11 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         const { keywords } = req.body;
         let searchedData = [
             {
-                language_code: "en",
-                location_name,
+                language_code: "zh_CN",
+                location_code: 2156,
                 keyword: keywords,
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
@@ -300,7 +302,7 @@ exports.getBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => __
         const user = yield userModel_1.default.findById(req.params.id);
         if (user) {
             //  getting business's searched result
-            const mainURL = `${process.env.BAIDU_URL}/task_get/advanced/${req.params.myIDs}`;
+            const mainURL = `${process.env.BAIDU_URL}/task_get/regular/${req.params.myIDs}`;
             return yield (0, axios_1.default)({
                 method: "get",
                 url: mainURL,
@@ -362,8 +364,11 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         let searchedData = [
             {
                 language_code: "en",
-                location_name,
+                location_code: 2840,
                 keyword: keywords,
+                device: "desktop",
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
@@ -477,9 +482,11 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
         const { keywords } = req.body;
         let searchedData = [
             {
-                language_code: "en",
-                location_name,
+                language_code: "cs",
+                location_code: 21502,
                 keyword: keywords,
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
