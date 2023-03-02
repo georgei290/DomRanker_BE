@@ -270,9 +270,11 @@ export const postBaiduKeywords = asyncHandler(
 
       let searchedData = [
         {
-          language_code: "en",
-          location_name,
+          language_code: "zh_CN",
+          location_code: 2156,
           keyword: keywords,
+          tag: "some_string_123",
+          postback_url: "https://your-server.com/postbackscript.php",
           postback_data: "regular",
         },
       ];
@@ -327,7 +329,7 @@ export const getBaiduKeywords = asyncHandler(
 
       if (user) {
         //  getting business's searched result
-        const mainURL = `${process.env.BAIDU_URL}/task_get/advanced/${req.params.myIDs}`;
+        const mainURL = `${process.env.BAIDU_URL}/task_get/regular/${req.params.myIDs}`;
         return await axios({
           method: "get",
           url: mainURL,
@@ -396,8 +398,11 @@ export const postNaverKeywords = asyncHandler(
       let searchedData = [
         {
           language_code: "en",
-          location_name,
+          location_code: 2840,
           keyword: keywords,
+          device: "desktop",
+          tag: "some_string_123",
+          postback_url: "https://your-server.com/postbackscript.php",
           postback_data: "regular",
         },
       ];
@@ -520,9 +525,11 @@ export const postSeznamKeywords = asyncHandler(
 
       let searchedData = [
         {
-          language_code: "en",
-          location_name,
+          language_code: "cs",
+          location_code: 21502,
           keyword: keywords,
+          tag: "some_string_123",
+          postback_url: "https://your-server.com/postbackscript.php",
           postback_data: "regular",
         },
       ];
