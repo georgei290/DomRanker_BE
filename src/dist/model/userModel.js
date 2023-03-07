@@ -32,7 +32,7 @@ const userModel = new mongoose_1.default.Schema({
     },
     password: {
         type: String,
-        required: [true, "Please enter your password"],
+        // required: [true, "Please enter your password"],
     },
     token: {
         type: String,

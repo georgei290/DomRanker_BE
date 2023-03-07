@@ -7,6 +7,8 @@ import usage from "./routers/usageRouter";
 import payment from "./routers/paymentRouter";
 import cookieSession from "cookie-session";
 import passport from "passport";
+import "./controller/socialAuthController";
+import social from "./routers/socialRouter";
 
 export const mainApp = (app: Application) => {
   // call all neccessary middlewares for this app
@@ -19,16 +21,30 @@ export const mainApp = (app: Application) => {
       cookieSession({
         name: "session",
         keys: ["DOMRANKER"],
-        maxAge: 24 * 60 * 60 * 100,
+        maxAge: 2 * 60 * 60 * 100,
       }),
     )
 
+    .use(function (req: any, res: any, next: any) {
+      if (req.session && !req.session.regenerate) {
+        req.session.regenerate = (cb: any) => {
+          cb();
+        };
+      }
+      if (req.session && !req.session.save) {
+        req.session.save = (cb: any) => {
+          cb();
+        };
+      }
+      next();
+    })
     .use(passport.initialize())
     .use(passport.session())
 
     //all routes
     .use("/api/user", user)
     .use("/api/usage", usage)
+    .use("/", social)
     .use("/api/payment", payment)
 
     .get("/", (req: Request, res: Response) => {

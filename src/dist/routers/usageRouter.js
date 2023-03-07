@@ -9,7 +9,9 @@ const router = express_1.default.Router();
 // SERP: SEO
 router.route("/:id/get-google-search").post(usageController_1.getGoogleKeywords);
 router.route("/:id/get-bing-search").post(usageController_1.getBingKeywords);
-router.route("/:id/get-yahoo-search").post(usageController_1.getYahooKeywords);
+// Yahoo
+router.route("/:id/get-yahoo-search").post(usageController_1.postYahooKeywords);
+router.route("/:id/:myIDs/get-yahoo-search").get(usageController_1.getYahooKeywords);
 // BAIDU
 router.route("/:id/get-baidu-search").post(usageController_1.postBaiduKeywords);
 router.route("/:id/:myIDs/get-baidu-search").get(usageController_1.getBaiduKeywords);
