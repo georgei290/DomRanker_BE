@@ -11,16 +11,30 @@ interface iData {
 	continent: string;
 }
 
+interface iLocation {
+	location_code?: number;
+	location_name?: string;
+	location_code_parent?: number | null;
+	country_iso_code?: string;
+	location_type?: string;
+}
+interface iLang {
+	language_name: string;
+	language_code: string;
+}
+
 const LOCATION_KEY = "13d114e76253410796c509c40729459b";
 const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
 const mainLocation = "Lagos,Nigeria";
+
+let myLocationData = {} as iData;
+let location = {} as iLocation;
+let language = {} as iLang;
 
 // GOOGLE SEO
 export const getGoogleKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
-			let myLocationData = {} as iData;
-
 			// Search has to be location base to get the best of Result
 
 			//   getting user's location
@@ -34,9 +48,40 @@ export const getGoogleKeywords = asyncHandler(
 				});
 
 			let language_name = "English (United Kingdom)";
-			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
-			console.log("Location: ", location_name);
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							console.log(props);
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
 
@@ -46,7 +91,7 @@ export const getGoogleKeywords = asyncHandler(
 			let searchedData = [
 				{
 					language_name,
-					location_name: mainLocation,
+					location_name: location.location_name,
 					keyword: keywords,
 				},
 			];
@@ -112,6 +157,39 @@ export const getBingKeywords = asyncHandler(
 			let language_name = "English (United Kingdom)";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							console.log(props);
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
 
@@ -121,7 +199,7 @@ export const getBingKeywords = asyncHandler(
 			let searchedData = [
 				{
 					language_name,
-					location_name: mainLocation,
+					location_name: location.location_name,
 					keyword: keywords,
 				},
 			];
@@ -167,7 +245,7 @@ export const getBingKeywords = asyncHandler(
 );
 
 // YAHOO SEO
-export const getYahooKeywords = asyncHandler(
+export const postYahooKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
 		try {
 			let myLocationData = {} as iData;
@@ -187,6 +265,39 @@ export const getYahooKeywords = asyncHandler(
 			let language_name = "English";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/yahoo/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							console.log("this is location", props);
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
 
@@ -195,22 +306,70 @@ export const getYahooKeywords = asyncHandler(
 
 			let searchedData = [
 				{
-					language_name,
-					location_name: "London,England,United Kingdom",
 					keyword: keywords,
+					language_code: "en",
+					location_code: 2840,
 				},
 			];
 
 			if (user) {
-				//  getting user's searched result
+				//  getting user's searched result live/regular
+				const mainURL = `${process.env.YAHOO_URL}`;
 				return await axios({
 					method: "post",
-					url: process.env.YAHOO_URL!,
+					url: mainURL,
 					auth: {
 						username: process.env.LOGIN_ID!,
 						password: process.env.LOGIN_KEY!,
 					},
 					data: searchedData,
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response) {
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error) {
+						console.log(error);
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur" });
+		}
+	},
+);
+
+// Secondly to get/view the requested search result
+export const getYahooKeywords = asyncHandler(
+	async (req: Request, res: Response, dataID: string): Promise<Response> => {
+		try {
+			//   checking for the validity of a user
+			const user = await userModel.findById(req.params.id);
+
+			if (user) {
+				//  getting business's searched result
+				const mainURL = `${process.env.YAHOO_URL}/task_get/regular/${req.params.myIDs}`;
+				return await axios({
+					method: "get",
+					url: mainURL,
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
 					headers: {
 						"content-type": "application/json",
 					},
@@ -262,6 +421,71 @@ export const postBaiduKeywords = asyncHandler(
 
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/languages",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						version: "v3",
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							language = props;
+						} else {
+							// console.log("No result");
+							return "No result";
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
 
@@ -270,6 +494,8 @@ export const postBaiduKeywords = asyncHandler(
 
 			let searchedData = [
 				{
+					// language_code: "en",
+					// location_code: location.location_code,
 					language_code: "zh_CN",
 					location_code: 2156,
 					keyword: keywords,
@@ -295,7 +521,6 @@ export const postBaiduKeywords = asyncHandler(
 					},
 				})
 					.then(function (response) {
-						console.log("getting results: ");
 						var result = response["data"]["tasks"];
 						// Result data
 						return res.status(200).json({
@@ -388,6 +613,73 @@ export const postNaverKeywords = asyncHandler(
 
 			let language_name = "English (United Kingdom)";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
+
+			//  For getting Language
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/languages",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						version: "v3",
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							language = props;
+						} else {
+							// console.log("No result");
+							return "No result";
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
+			//  For getting Location
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
 
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
@@ -516,6 +808,73 @@ export const postSeznamKeywords = asyncHandler(
 
 			let language_name = "English (United Kingdom)";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
+
+			//  For getting Language
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/languages",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						version: "v3",
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							language = props;
+						} else {
+							// console.log("No result");
+							return "No result";
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
+			//  For getting Location
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
 
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
@@ -774,6 +1133,73 @@ export const postBusinessInfo = asyncHandler(
 			let language_name = "English (United Kingdom)";
 			let location_name = `${myLocationData?.city},${myLocationData?.country}`;
 
+			//  For getting Language
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/languages",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						version: "v3",
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							language = props;
+						} else {
+							// console.log("No result");
+							return "No result";
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
+			//  For getting Location
+			await axios({
+				method: "get",
+				url: "https://api.dataforseo.com/v3/serp/google/locations",
+				auth: {
+					username: process.env.LOGIN_ID!,
+					password: process.env.LOGIN_KEY!,
+				},
+				data: [
+					{
+						country: `us`,
+					},
+				],
+				headers: {
+					"content-type": "application/json",
+				},
+			})
+				.then(function (response) {
+					var result = response["data"]["tasks"][0]["result"];
+					// Result data
+					//
+					result.map((props: any) => {
+						if (props.location_name === myLocationData?.country) {
+							location = props;
+						} else {
+							return;
+						}
+					});
+				})
+				.catch(function (error) {
+					console.log(error);
+				});
+
 			//   checking for the validity of a user
 			const user = await userModel.findById(req.params.id);
 
@@ -782,8 +1208,10 @@ export const postBusinessInfo = asyncHandler(
 
 			let searchedData = [
 				{
+					// language_code: "en",
+					// location_name: location.location_name,
 					language_code: "en",
-					location_name: mainLocation,
+					location_name: location.location_name,
 					keyword: keywords,
 				},
 			];
@@ -916,7 +1344,7 @@ export const postOnPagesData = asyncHandler(
 
 			//    getting user's search words
 			const { word } = req.body;
-			console.log("New Data Search");
+			console.log("New Data Search: ", word);
 			let searchedData = [
 				{
 					target: word,
@@ -927,7 +1355,6 @@ export const postOnPagesData = asyncHandler(
 			if (user) {
 				//  getting business's searched result
 				const mainURL = `${process.env.ONPAGE_URL}/task_post`;
-				console.log(mainURL);
 
 				return await axios({
 					method: "post",
@@ -945,9 +1372,6 @@ export const postOnPagesData = asyncHandler(
 						var result = response["data"]["tasks"];
 
 						// Result data
-						console.log(result[0].id);
-						console.log(result);
-
 						return res.status(200).json({
 							message: "seen",
 							data: result,
@@ -1031,7 +1455,6 @@ export const getOnPagesData = asyncHandler(
 						});
 					})
 					.catch(function (error) {
-						console.log(error);
 						return res.status(200).json({
 							message: "seen",
 							data: error,
