@@ -29,4 +29,9 @@ router.get("/auth/google/callback", passport_1.default.authenticate("google", {
     successRedirect: "/success",
     failureRedirect: "/failure",
 }));
+router.get("/gitbub/auth", passport_1.default.authenticate("github", { scope: ["profile", "user:email"] }));
+router.get("/auth/github/callback", passport_1.default.authenticate("github", {
+    successRedirect: "/success",
+    failureRedirect: "/failure",
+}));
 exports.default = router;

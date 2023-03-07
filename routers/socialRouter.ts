@@ -36,4 +36,16 @@ router.get(
   }),
 );
 
+router.get(
+  "/gitbub/auth",
+  passport.authenticate("github", { scope: ["profile", "user:email"] }),
+);
+router.get(
+  "/auth/github/callback",
+  passport.authenticate("github", {
+    successRedirect: "/success",
+    failureRedirect: "/failure",
+  }),
+);
+
 export default router;
