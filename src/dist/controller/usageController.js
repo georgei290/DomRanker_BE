@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOnPagesData = exports.postOnPagesData = exports.getBusinessInfo = exports.postBusinessInfo = exports.gettBacklinkSummary = exports.getSeznamKeywords = exports.postSeznamKeywords = exports.getNaverKeywords = exports.postNaverKeywords = exports.getBaiduKeywords = exports.postBaiduKeywords = exports.getYahooKeywords = exports.getBingKeywords = exports.getGoogleKeywords = void 0;
+exports.getOnPagesData = exports.postOnPagesData = exports.getBusinessInfo = exports.postBusinessInfo = exports.getTestBacklinkSummary = exports.gettBacklinkSummary = exports.getSeznamKeywords = exports.postSeznamKeywords = exports.getNaverKeywords = exports.postNaverKeywords = exports.getBaiduKeywords = exports.postBaiduKeywords = exports.getYahooKeywords = exports.getBingKeywords = exports.getGoogleKeywords = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -20,6 +20,7 @@ const handlers_1 = require("./handlers");
 dotenv_1.default.config();
 const LOCATION_KEY = "13d114e76253410796c509c40729459b";
 const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
+const mainLocation = "Lagos,Nigeria";
 // GOOGLE SEO
 exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -44,7 +45,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         let searchedData = [
             {
                 language_name,
-                location_name: location_name || "Lagos,Nigeria",
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];
@@ -111,7 +112,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
         let searchedData = [
             {
                 language_name,
-                location_name,
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];
@@ -178,7 +179,7 @@ exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(
         let searchedData = [
             {
                 language_name,
-                location_name,
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];
@@ -244,9 +245,11 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         const { keywords } = req.body;
         let searchedData = [
             {
-                language_code: "en",
-                location_name,
+                language_code: "zh_CN",
+                location_code: 2156,
                 keyword: keywords,
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
@@ -299,7 +302,7 @@ exports.getBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => __
         const user = yield userModel_1.default.findById(req.params.id);
         if (user) {
             //  getting business's searched result
-            const mainURL = `${process.env.BAIDU_URL}/task_get/advanced/${req.params.myIDs}`;
+            const mainURL = `${process.env.BAIDU_URL}/task_get/regular/${req.params.myIDs}`;
             return yield (0, axios_1.default)({
                 method: "get",
                 url: mainURL,
@@ -361,8 +364,11 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         let searchedData = [
             {
                 language_code: "en",
-                location_name,
+                location_code: 2840,
                 keyword: keywords,
+                device: "desktop",
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
@@ -476,9 +482,11 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
         const { keywords } = req.body;
         let searchedData = [
             {
-                language_code: "en",
-                location_name,
+                language_code: "cs",
+                location_code: 21502,
                 keyword: keywords,
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
                 postback_data: "regular",
             },
         ];
@@ -580,7 +588,8 @@ exports.gettBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID) =>
         const { keywords } = req.body;
         let searchedData = [
             {
-                target: "explodingtopics.com",
+                // target: "explodingtopics.com",
+                target: keywords,
                 internal_list_limit: 10,
                 include_subdomains: true,
                 backlinks_filters: ["dofollow", "=", true],
@@ -590,6 +599,65 @@ exports.gettBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID) =>
         if (user) {
             //  getting user's searched result
             const mainURL = `${process.env.BACKLINK_SUMMARY_URL}`;
+            return yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                // Result data
+                return res.status(200).json({
+                    message: "seen",
+                    data: result,
+                });
+            })
+                .catch(function (error) {
+                console.log(error);
+                return res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "You do not have access right for this Operation",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({ message: "An Error Occur" });
+    }
+}));
+exports.getTestBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let myLocationData = {};
+        // Search has to be location base to get the best of Result
+        //   checking for the validity of a user
+        const user = yield userModel_1.default.findById(req.params.id);
+        //    getting user's search words
+        const { keywords } = req.body;
+        let searchedData = [
+            {
+                target: "explodingtopics.com",
+                internal_list_limit: 10,
+                include_subdomains: true,
+                backlinks_filters: ["dofollow", "=", true],
+                backlinks_status_type: "all",
+            },
+        ];
+        if (user) {
+            //  getting user's searched result
+            const test = "https://api.dataforseo.com/v3/backlinks/summary/live";
+            const mainURL = `${test}`;
             return yield (0, axios_1.default)({
                 method: "post",
                 url: mainURL,
@@ -651,7 +719,7 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
         let searchedData = [
             {
                 language_code: "en",
-                location_name,
+                location_name: mainLocation,
                 keyword: keywords,
             },
         ];

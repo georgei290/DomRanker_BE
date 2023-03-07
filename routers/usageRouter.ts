@@ -14,6 +14,7 @@ import {
 	getBusinessInfo,
 	postOnPagesData,
 	getOnPagesData,
+	getTestBacklinkSummary,
 	// starterPlan
 } from "../controller/usageController";
 
@@ -36,7 +37,9 @@ router.route("/:id/:myIDs/get-naver-search").get(getNaverKeywords);
 router.route("/:id/get-seznam-search").post(postSeznamKeywords);
 router.route("/:id/:myIDs/get-seznam-search").get(getSeznamKeywords);
 
+//  Backlink Call
 router.route("/:id/backlink-summary-search").post(gettBacklinkSummary);
+router.route("/:id/test-backlink-summary-search").post(getTestBacklinkSummary);
 
 // BusinessData API Call
 router.route("/:id/business-data-search").post(postBusinessInfo);
@@ -45,7 +48,5 @@ router.route("/:id/:myID/business-data-search").get(getBusinessInfo);
 // onPage API Call
 router.route("/:id/on-page-search").post(postOnPagesData);
 router.route("/:id/read-on-page-search").post(getOnPagesData);
-
-//
 
 export default router;
