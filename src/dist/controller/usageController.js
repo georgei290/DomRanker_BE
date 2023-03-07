@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOnPagesData = exports.postOnPagesData = exports.getBusinessInfo = exports.postBusinessInfo = exports.getTestBacklinkSummary = exports.gettBacklinkSummary = exports.getSeznamKeywords = exports.postSeznamKeywords = exports.getNaverKeywords = exports.postNaverKeywords = exports.getBaiduKeywords = exports.postBaiduKeywords = exports.getYahooKeywords = exports.getBingKeywords = exports.getGoogleKeywords = void 0;
+exports.getOnPagesData = exports.postOnPagesData = exports.getBusinessInfo = exports.postBusinessInfo = exports.getTestBacklinkSummary = exports.gettBacklinkSummary = exports.getSeznamKeywords = exports.postSeznamKeywords = exports.getNaverKeywords = exports.postNaverKeywords = exports.getBaiduKeywords = exports.postBaiduKeywords = exports.getYahooKeywords = exports.postYahooKeywords = exports.getBingKeywords = exports.getGoogleKeywords = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -21,10 +21,12 @@ dotenv_1.default.config();
 const LOCATION_KEY = "13d114e76253410796c509c40729459b";
 const LOCATION = "https://ipgeolocation.abstractapi.com/v1/?";
 const mainLocation = "Lagos,Nigeria";
+let myLocationData = {};
+let location = {};
+let language = {};
 // GOOGLE SEO
 exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let myLocationData = {};
         // Search has to be location base to get the best of Result
         //   getting user's location
         yield axios_1.default
@@ -36,8 +38,39 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             console.log(error);
         });
         let language_name = "English (United Kingdom)";
-        let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
-        console.log("Location: ", location_name);
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    console.log(props);
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -45,7 +78,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         let searchedData = [
             {
                 language_name,
-                location_name: mainLocation,
+                location_name: location.location_name,
                 keyword: keywords,
             },
         ];
@@ -105,6 +138,39 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
         });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    console.log(props);
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -112,7 +178,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
         let searchedData = [
             {
                 language_name,
-                location_name: mainLocation,
+                location_name: location.location_name,
                 keyword: keywords,
             },
         ];
@@ -157,7 +223,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
     }
 }));
 // YAHOO SEO
-exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let myLocationData = {};
         // Search has to be location base to get the best of Result
@@ -172,27 +238,109 @@ exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(
         });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    console.log(props);
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { keywords } = req.body;
         let searchedData = [
             {
-                language_name,
-                location_name: mainLocation,
+                language_code: "en",
+                location_code: 2840,
                 keyword: keywords,
+                tag: "some_string_123",
+                postback_url: "https://your-server.com/postbackscript.php",
+                postback_data: "regular",
             },
         ];
         if (user) {
-            //  getting user's searched result
+            //  getting user's searched result live/regular
+            const mainURL = `${process.env.YAHOO_URL}/task_post`;
             return yield (0, axios_1.default)({
                 method: "post",
-                url: process.env.YAHOO_URL,
+                url: mainURL,
                 auth: {
                     username: process.env.LOGIN_ID,
                     password: process.env.LOGIN_KEY,
                 },
                 data: searchedData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                // Result data
+                return res.status(200).json({
+                    message: "seen",
+                    data: result,
+                });
+            })
+                .catch(function (error) {
+                console.log(error);
+                return res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "You do not have access right for this Operation",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({ message: "An Error Occur" });
+    }
+}));
+// Secondly to get/view the requested search result
+exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //   checking for the validity of a user
+        const user = yield userModel_1.default.findById(req.params.id);
+        if (user) {
+            //  getting business's searched result
+            const mainURL = `${process.env.YAHOO_URL}/task_get/regular/${req.params.myIDs}`;
+            return yield (0, axios_1.default)({
+                method: "get",
+                url: mainURL,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
                 headers: {
                     "content-type": "application/json",
                 },
@@ -239,12 +387,78 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
             console.log(error);
         });
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/languages",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    version: "v3",
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    language = props;
+                }
+                else {
+                    // console.log("No result");
+                    return "No result";
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { keywords } = req.body;
         let searchedData = [
             {
+                // language_code: "en",
+                // location_code: location.location_code,
                 language_code: "zh_CN",
                 location_code: 2156,
                 keyword: keywords,
@@ -269,7 +483,6 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 },
             })
                 .then(function (response) {
-                console.log("getting results: ");
                 var result = response["data"]["tasks"];
                 // Result data
                 return res.status(200).json({
@@ -357,6 +570,72 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
         });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        //  For getting Language
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/languages",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    version: "v3",
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    language = props;
+                }
+                else {
+                    // console.log("No result");
+                    return "No result";
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
+        //  For getting Location
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -476,6 +755,72 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
         });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        //  For getting Language
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/languages",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    version: "v3",
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    language = props;
+                }
+                else {
+                    // console.log("No result");
+                    return "No result";
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
+        //  For getting Location
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -712,14 +1057,82 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
         });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
+        //  For getting Language
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/languages",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    version: "v3",
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    language = props;
+                }
+                else {
+                    // console.log("No result");
+                    return "No result";
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
+        //  For getting Location
+        yield (0, axios_1.default)({
+            method: "get",
+            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            auth: {
+                username: process.env.LOGIN_ID,
+                password: process.env.LOGIN_KEY,
+            },
+            data: [
+                {
+                    country: `us`,
+                },
+            ],
+            headers: {
+                "content-type": "application/json",
+            },
+        })
+            .then(function (response) {
+            var result = response["data"]["tasks"][0]["result"];
+            // Result data
+            //
+            result.map((props) => {
+                if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
+                    location = props;
+                }
+                else {
+                    return;
+                }
+            });
+        })
+            .catch(function (error) {
+            console.log(error);
+        });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { keywords } = req.body;
         let searchedData = [
             {
+                // language_code: "en",
+                // location_name: location.location_name,
                 language_code: "en",
-                location_name: mainLocation,
+                location_name: location.location_name,
                 keyword: keywords,
             },
         ];
@@ -839,7 +1252,7 @@ exports.postOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { word } = req.body;
-        console.log("New Data Search");
+        console.log("New Data Search: ", word);
         let searchedData = [
             {
                 target: word,
@@ -849,7 +1262,6 @@ exports.postOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
         if (user) {
             //  getting business's searched result
             const mainURL = `${process.env.ONPAGE_URL}/task_post`;
-            console.log(mainURL);
             return yield (0, axios_1.default)({
                 method: "post",
                 url: mainURL,
@@ -866,8 +1278,6 @@ exports.postOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
                 return __awaiter(this, void 0, void 0, function* () {
                     var result = response["data"]["tasks"];
                     // Result data
-                    console.log(result[0].id);
-                    console.log(result);
                     return res.status(200).json({
                         message: "seen",
                         data: result,
@@ -945,7 +1355,6 @@ exports.getOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
