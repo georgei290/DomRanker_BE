@@ -232,44 +232,46 @@ export const changePassword = async (
 // function to handle user's login
 export const loginUser = async (req: Request, res: Response) => {
 	try {
-		const { email, password } = req.body;
-		const user = await userModel.findOne({ email });
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email });
 
-		if (user) {
-			if (user.verified) {
-				// checking if password is correct after/and decrypting
-				// const passCheck: any = await bcrypt.compare(password, user.password);
-				//encrypting user's info for persistent
-				// const tokenData = jwt.sign(
-				// { id: user._id, status: user.status },
-				// process.env.SECRET,
-				// );
-				// if (passCheck) {
-				// const { password, ...info } = user._doc;
-				// return res.status(200).json({
-				// message: "user found",
-				// data: {
-				// ...info,
-				// tokenData,
-				// },
-				// });
-			} else {
-				return res.status(404).json({ message: "password is not correct" });
-			}
-		} else {
-			return res
-				.status(404)
-				.json({ message: "user has not yet been verified" });
-		}
-	} catch (err) {
-		// else {
-		// return res.status(404).json({ message: "user cannot be found" });
-		// }
-		// }
-		return res.status(404).json({
-			message: `Error: ${err}`,
-		});
-	}
+    if (user) {
+      if (user.verified) {
+        // checking if password is correct after/and decrypting
+        const passCheck: any = await bcrypt.compare(password, user.password);
+        //encrypting user's info for persistent
+        const tokenData = jwt.sign(
+          { id: user._id, status: user.status },
+          process.env.SECRET,
+        );
+        if (passCheck) {
+          const { password, ...info } = user._doc;
+          return res.status(200).json({
+            message: "user found",
+            data: {
+              ...info,
+              tokenData,
+            },
+          });
+        } else {
+          return res.status(404).json({ message: "password is not correct" });
+        }
+      } else {
+        return res
+          .status(404)
+          .json({ message: "user has not yet been verified" });
+      }
+    }
+  } catch (err) {
+    // else {
+    // return res.status(404).json({ message: "user cannot be found" });
+    // }
+    // }
+    return res.status(404).json({
+      message: `Error: ${err}`,
+    });
+  }
+	
 };
 
 //function for updatinig personal avatrs
