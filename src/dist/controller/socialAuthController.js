@@ -22,6 +22,7 @@ const GOOGLE_SECRET = "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";
 passport_1.default.use(new GoogleStrategy({
     clientID: GOOGLE_ID,
     clientSecret: GOOGLE_SECRET,
+    // callbackURL: "/auth/google/callback",
     callbackURL: "/auth/google/callback",
     scope: ["profile", "email"],
 }, (accessToken, refreshToken, profile, callback) => __awaiter(void 0, void 0, void 0, function* () {
