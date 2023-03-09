@@ -24,7 +24,7 @@ process.on("uncaughtException", (err) => {
     console.log(err.message);
     process.exit(1);
 });
-// caught any form of unhandled err and shut down server 
+// caught any form of unhandled err and shut down server
 process.on("unhandledRejection", (reason) => {
     console.log(reason);
     server.close(() => {

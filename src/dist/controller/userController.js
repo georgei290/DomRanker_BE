@@ -8,17 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __rest = (this && this.__rest) || function (s, e) {
-    var t = {};
-    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
-        t[p] = s[p];
-    if (s != null && typeof Object.getOwnPropertySymbols === "function")
-        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
-            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
-                t[p[i]] = s[p[i]];
-        }
-    return t;
-};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -78,7 +67,7 @@ exports.createUser = (0, handlers_1.asyncHandler)((req, res, next) => __awaiter(
         const hashed = yield bcrypt_1.default.hash(password, salt);
         // generating random token for newly created user
         const data = crypto_1.default.randomBytes(16).toString("hex");
-        const tokenData = jsonwebtoken_1.default.sign({ data }, process.env.SECRET);
+        // const tokenData:any = jwt.sign({ data }, process.env.SECRET);
         // function to create new users
         const user = yield userModel_1.default.create({
             userName,
@@ -86,7 +75,7 @@ exports.createUser = (0, handlers_1.asyncHandler)((req, res, next) => __awaiter(
             password: hashed,
             status: "General",
             verified: false,
-            token: tokenData,
+            // token: tokenData,
         });
         // Immediately user has been created a verification mail should be sent
         // Function for sending such mail
@@ -217,31 +206,37 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (user) {
             if (user.verified) {
                 // checking if password is correct after/and decrypting
-                const passCheck = yield bcrypt_1.default.compare(password, user.password);
+                // const passCheck: any = await bcrypt.compare(password, user.password);
                 //encrypting user's info for persistent
-                const tokenData = jsonwebtoken_1.default.sign({ id: user._id, status: user.status }, process.env.SECRET);
-                if (passCheck) {
-                    const _a = user._doc, { password } = _a, info = __rest(_a, ["password"]);
-                    return res.status(200).json({
-                        message: "user found",
-                        data: Object.assign(Object.assign({}, info), { tokenData }),
-                    });
-                }
-                else {
-                    return res.status(404).json({ message: "password is not correct" });
-                }
+                // const tokenData = jwt.sign(
+                // { id: user._id, status: user.status },
+                // process.env.SECRET,
+                // );
+                // if (passCheck) {
+                // const { password, ...info } = user._doc;
+                // return res.status(200).json({
+                // message: "user found",
+                // data: {
+                // ...info,
+                // tokenData,
+                // },
+                // });
             }
             else {
-                return res
-                    .status(404)
-                    .json({ message: "user has not yet been verified" });
+                return res.status(404).json({ message: "password is not correct" });
             }
         }
         else {
-            return res.status(404).json({ message: "user cannot be found" });
+            return res
+                .status(404)
+                .json({ message: "user has not yet been verified" });
         }
     }
     catch (err) {
+        // else {
+        // return res.status(404).json({ message: "user cannot be found" });
+        // }
+        // }
         return res.status(404).json({
             message: `Error: ${err}`,
         });

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getOnPagesData = exports.postOnPagesData = exports.getBusinessInfo = exports.postBusinessInfo = exports.getTestBacklinkSummary = exports.gettBacklinkSummary = exports.getSeznamKeywords = exports.postSeznamKeywords = exports.getNaverKeywords = exports.postNaverKeywords = exports.getBaiduKeywords = exports.postBaiduKeywords = exports.getYahooKeywords = exports.postYahooKeywords = exports.getBingKeywords = exports.getGoogleKeywords = void 0;
+exports.postContentSearchData = exports.postContentSummaryData = exports.getKeywordData = exports.getOnPagesData = exports.postOnPagesData = exports.getBusinessInfo = exports.postBusinessInfo = exports.getTestBacklinkSummary = exports.gettBacklinkSummary = exports.getSeznamKeywords = exports.postSeznamKeywords = exports.getNaverKeywords = exports.postNaverKeywords = exports.getBaiduKeywords = exports.postBaiduKeywords = exports.getYahooKeywords = exports.postYahooKeywords = exports.getBingKeywords = exports.getGoogleKeywords = void 0;
 const userModel_1 = __importDefault(require("../model/userModel"));
 const axios_1 = __importDefault(require("axios"));
 const dotenv_1 = __importDefault(require("dotenv"));
@@ -236,11 +236,11 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             .catch((error) => {
             console.log(error);
         });
-        let language_name = "English (United Kingdom)";
+        let language_name = "English";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         yield (0, axios_1.default)({
             method: "get",
-            url: "https://api.dataforseo.com/v3/serp/google/locations",
+            url: "https://api.dataforseo.com/v3/serp/yahoo/locations",
             auth: {
                 username: process.env.LOGIN_ID,
                 password: process.env.LOGIN_KEY,
@@ -260,7 +260,7 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             //
             result.map((props) => {
                 if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
-                    console.log(props);
+                    console.log("this is location", props);
                     location = props;
                 }
                 else {
@@ -277,17 +277,14 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
         const { keywords } = req.body;
         let searchedData = [
             {
+                keyword: keywords,
                 language_code: "en",
                 location_code: 2840,
-                keyword: keywords,
-                tag: "some_string_123",
-                postback_url: "https://your-server.com/postbackscript.php",
-                postback_data: "regular",
             },
         ];
         if (user) {
             //  getting user's searched result live/regular
-            const mainURL = `${process.env.YAHOO_URL}/task_post`;
+            const mainURL = `${process.env.YAHOO_URL}`;
             return yield (0, axios_1.default)({
                 method: "post",
                 url: mainURL,
@@ -1043,6 +1040,7 @@ exports.getTestBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID)
 }));
 //  Business Data API
 exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     try {
         let myLocationData = {};
         // Search has to be location base to get the best of Result
@@ -1127,6 +1125,7 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { keywords } = req.body;
+        console.log((_a = location.country_iso_code) === null || _a === void 0 ? void 0 : _a.toLowerCase());
         let searchedData = [
             {
                 // language_code: "en",
@@ -1322,11 +1321,11 @@ exports.getOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
         let searchedData = [
             {
                 id: dataID,
-                filters: [
-                    ["resource_type", "=", "html"],
-                    "and",
-                    ["meta.scripts_count", ">", 40],
-                ],
+                // filters: [
+                // ["resource_type", "=", "html"],
+                // "and",
+                // ["meta.scripts_count", ">", 40],
+                // ],
                 order_by: ["meta.content.plain_text_word_count,desc"],
                 limit: 10,
             },
@@ -1334,6 +1333,215 @@ exports.getOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
         if (user) {
             //  getting business's searched result
             const mainURL = `${process.env.ONPAGE_URL}/pages`;
+            return yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                // Result data
+                return res.status(200).json({
+                    message: "seen",
+                    data: result,
+                });
+            })
+                .catch(function (error) {
+                return res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "You do not have access right for this Operation",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({ message: "An Error Occur" });
+    }
+}));
+exports.getKeywordData = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let myLocationData = {};
+        // Search has to be location base to get the best of Result
+        //   getting user's location
+        yield axios_1.default
+            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .then((response) => {
+            myLocationData = response.data;
+        })
+            .catch((error) => {
+            console.log(error);
+        });
+        //   checking for the validity of a user
+        const user = yield userModel_1.default.findById(req.params.id);
+        //    getting user's search words
+        const { target } = req.body;
+        let searchedData = [
+            {
+                language_code: "en",
+                location_code: 2840,
+                target,
+            },
+        ];
+        if (user) {
+            //  getting business's searched result
+            const mainURL = `${process.env.KEYWORD_URL}`;
+            return yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                // Result data
+                return res.status(200).json({
+                    message: "seen",
+                    data: result,
+                });
+            })
+                .catch(function (error) {
+                return res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "You do not have access right for this Operation",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({ message: "An Error Occur" });
+    }
+}));
+exports.postContentSummaryData = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let myLocationData = {};
+        // Search has to be location base to get the best of Result
+        //   getting user's location
+        yield axios_1.default
+            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .then((response) => {
+            myLocationData = response.data;
+        })
+            .catch((error) => {
+            console.log(error);
+        });
+        //   checking for the validity of a user
+        const user = yield userModel_1.default.findById(req.params.id);
+        //    getting user's search words
+        const { keyword, type } = req.body;
+        let searchedData = [
+            {
+                keyword,
+                content_mode: "as_is",
+                page_type: [type],
+                filters: [
+                    ["language", "=", "en"],
+                    "and",
+                    ["content_info.rating.rating_value", ">", 0],
+                ],
+                order_by: ["main_domain,asc"],
+                offset: 10,
+                limit: 3,
+            },
+        ];
+        if (user) {
+            //  getting business's searched result
+            const mainURL = `${process.env.CONTENT_URL}`;
+            return yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                // Result data
+                return res.status(200).json({
+                    message: "seen",
+                    data: result,
+                });
+            })
+                .catch(function (error) {
+                return res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+        }
+        else {
+            return res.status(200).json({
+                message: "You do not have access right for this Operation",
+            });
+        }
+    }
+    catch (error) {
+        return res.status(404).json({ message: "An Error Occur" });
+    }
+}));
+exports.postContentSearchData = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        let myLocationData = {};
+        // Search has to be location base to get the best of Result
+        //   getting user's location
+        yield axios_1.default
+            .get(`${process.env.LOCATION}api_key=${process.env.LOCATION_KEY}`)
+            .then((response) => {
+            myLocationData = response.data;
+        })
+            .catch((error) => {
+            console.log(error);
+        });
+        //   checking for the validity of a user
+        const user = yield userModel_1.default.findById(req.params.id);
+        //    getting user's search words
+        const { keyword } = req.body;
+        let searchedData = [
+            {
+                keyword,
+                search_mode: "as_is",
+                page_type: [
+                    "ecommerce",
+                    "news",
+                    "blogs",
+                    "message-boards",
+                    "organization",
+                ],
+                filters: [["content_info.rating.rating_value", ">", 0]],
+                internal_list_limit: 8,
+                positive_connotation_threshold: 0.5,
+            },
+        ];
+        if (user) {
+            //  getting business's searched result
+            const mainURL = `${process.env.CONTENT_SEARCH_URL}`;
             return yield (0, axios_1.default)({
                 method: "post",
                 url: mainURL,

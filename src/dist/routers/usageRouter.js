@@ -30,5 +30,9 @@ router.route("/:id/:myID/business-data-search").get(usageController_1.getBusines
 // onPage API Call
 router.route("/:id/on-page-search").post(usageController_1.postOnPagesData);
 router.route("/:id/read-on-page-search").post(usageController_1.getOnPagesData);
-//
+// keyWord API Call
+router.route("/:id/keyword").post(usageController_1.getKeywordData);
+// Content Summary API Call
+router.route("/:id/content-summary").post(usageController_1.postContentSummaryData);
+router.route("/:id/content-search").post(usageController_1.postContentSearchData);
 exports.default = router;
