@@ -4,6 +4,7 @@ dot.config()
 
 
 let dbString = process.env.DB_STRING_ONLINE_WORK;
+// let dbString = process.env.DB_STRING ;
 
 export const connectDB = async(): Promise<void> => {
     try{

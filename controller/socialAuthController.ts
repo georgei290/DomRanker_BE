@@ -17,7 +17,7 @@ passport.use(
       clientID: GOOGLE_ID,
       clientSecret: GOOGLE_SECRET,
       // callbackURL: "/auth/google/callback",
-      callbackURL: "/auth/google/callback",
+      callbackURL: "https://dom-ranker.onrender.com/auth/google/callback",
       scope: ["profile", "email"],
     },
     async (
