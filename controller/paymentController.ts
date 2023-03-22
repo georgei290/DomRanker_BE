@@ -14,7 +14,7 @@ const flw = new Flutterwave(
   process.env.FLW_SECRET_KEY_TEST,
 );
 
-//  Generating the OTP that would be sent to the USERs
+//  Generating the OTP that would be sent to the 
 const getOTP = Math.floor(100000 + Math.random() * 900000);
 
 let reCallCharge: any;
