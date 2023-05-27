@@ -15,3 +15,23 @@ declare module "*flutterwave-node-v3";
 declare module "*validator/lib/isEmail";
 declare module "*passport";
 declare module "*passport-google-oauth20";
+
+declare module "nodemailer" {
+	interface TransportOptions {
+		service?: string;
+		auth: {
+			type?: any;
+			accessToken?: any;
+			user?: any;
+			refreshToken?: any;
+			clientId?: any;
+			clientSecret?: any;
+			accessToken?: any;
+		};
+	}
+
+	function createTransport(
+		transport: TransportOptions | string,
+		defaults?: TransportOptions,
+	): Transporter;
+}

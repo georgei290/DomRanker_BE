@@ -23,7 +23,7 @@ passport_1.default.use(new GoogleStrategy({
     clientID: GOOGLE_ID,
     clientSecret: GOOGLE_SECRET,
     // callbackURL: "/auth/google/callback",
-    callbackURL: "/auth/google/callback",
+    callbackURL: "https://dom-ranker.onrender.com/auth/google/callback",
     scope: ["profile", "email"],
 }, (accessToken, refreshToken, profile, callback) => __awaiter(void 0, void 0, void 0, function* () {
     const checkUser = yield userModel_1.default.findOne({ email: profile._json.email });

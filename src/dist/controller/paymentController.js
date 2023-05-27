@@ -22,7 +22,7 @@ const email_1 = require("../utlis/email");
 dotenv_1.default.config();
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY_TEST)
 const flw = new flutterwave_node_v3_1.default(process.env.FLW_PUBLIC_KEY_TEST, process.env.FLW_SECRET_KEY_TEST);
-//  Generating the OTP that would be sent to the USERs
+//  Generating the OTP that would be sent to the 
 const getOTP = Math.floor(100000 + Math.random() * 900000);
 let reCallCharge;
 exports.activatePlan = (0, handlers_1.asyncHandler)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

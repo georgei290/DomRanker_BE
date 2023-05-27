@@ -217,7 +217,7 @@ const loginUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         if (user) {
             if (user.verified) {
                 // checking if password is correct after/and decrypting
-                const passCheck = yield bcrypt_1.default.compare(password, user.password);
+                const passCheck = yield bcrypt_1.default.compare(password, user === null || user === void 0 ? void 0 : user.password);
                 //encrypting user's info for persistent
                 const tokenData = jsonwebtoken_1.default.sign({ id: user._id, status: user.status }, process.env.SECRET);
                 if (passCheck) {

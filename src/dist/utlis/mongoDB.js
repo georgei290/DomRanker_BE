@@ -17,6 +17,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 let dbString = process.env.DB_STRING_ONLINE_WORK;
+// let dbString = process.env.DB_STRING ;
 const connectDB = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         mongoose_1.default.connect(dbString, () => {

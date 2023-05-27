@@ -16,7 +16,7 @@ const port = process.env.PORT;
 (0, mainApp_1.mainApp)(app);
 // starting up server
 const server = app.listen(port, () => {
-    console.log("Let's do this...!");
+    console.log("Let's do this...!", port);
 });
 // activating process call to access root app
 process.on("uncaughtException", (err) => {

@@ -34,9 +34,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English (United Kingdom)";
         yield (0, axios_1.default)({
             method: "get",
@@ -60,7 +58,6 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             //
             result.map((props) => {
                 if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
-                    console.log(props);
                     location = props;
                 }
                 else {
@@ -68,9 +65,7 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -105,7 +100,6 @@ exports.getGoogleKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -133,9 +127,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         yield (0, axios_1.default)({
@@ -160,7 +152,6 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
             //
             result.map((props) => {
                 if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
-                    console.log(props);
                     location = props;
                 }
                 else {
@@ -168,9 +159,7 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -205,7 +194,6 @@ exports.getBingKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter(v
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -233,9 +221,7 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         yield (0, axios_1.default)({
@@ -260,7 +246,6 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
             //
             result.map((props) => {
                 if (props.location_name === (myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country)) {
-                    console.log("this is location", props);
                     location = props;
                 }
                 else {
@@ -268,9 +253,7 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -306,7 +289,6 @@ exports.postYahooKeywords = (0, handlers_1.asyncHandler)((req, res) => __awaiter
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -351,7 +333,6 @@ exports.getYahooKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -380,9 +361,7 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         yield (0, axios_1.default)({
             method: "get",
@@ -408,14 +387,11 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                     language = props;
                 }
                 else {
-                    // console.log("No result");
                     return "No result";
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         yield (0, axios_1.default)({
             method: "get",
             url: "https://api.dataforseo.com/v3/serp/google/locations",
@@ -445,9 +421,7 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -488,7 +462,6 @@ exports.postBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -533,7 +506,6 @@ exports.getBaiduKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -562,9 +534,7 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //  For getting Language
@@ -592,14 +562,11 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                     language = props;
                 }
                 else {
-                    // console.log("No result");
                     return "No result";
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //  For getting Location
         yield (0, axios_1.default)({
             method: "get",
@@ -630,9 +597,7 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -664,7 +629,6 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 },
             })
                 .then(function (response) {
-                console.log("getting results: ");
                 var result = response["data"]["tasks"];
                 // Result data
                 return res.status(200).json({
@@ -673,7 +637,6 @@ exports.postNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -718,7 +681,6 @@ exports.getNaverKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -747,9 +709,7 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //  For getting Language
@@ -777,14 +737,11 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
                     language = props;
                 }
                 else {
-                    // console.log("No result");
                     return "No result";
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //  For getting Location
         yield (0, axios_1.default)({
             method: "get",
@@ -815,9 +772,7 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -848,7 +803,6 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
                 },
             })
                 .then(function (response) {
-                console.log("getting results: ");
                 var result = response["data"]["tasks"];
                 // Result data
                 return res.status(200).json({
@@ -857,7 +811,6 @@ exports.postSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => 
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -902,7 +855,6 @@ exports.getSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -923,6 +875,10 @@ exports.getSeznamKeywords = (0, handlers_1.asyncHandler)((req, res, dataID) => _
 exports.gettBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let myLocationData = {};
+        let SummaryData;
+        let AnchorData;
+        let ReferringData;
+        let BackLinkData;
         // Search has to be location base to get the best of Result
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
@@ -940,8 +896,9 @@ exports.gettBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID) =>
         ];
         if (user) {
             //  getting user's searched result
+            //summary backlink data
             const mainURL = `${process.env.BACKLINK_SUMMARY_URL}`;
-            return yield (0, axios_1.default)({
+            yield (0, axios_1.default)({
                 method: "post",
                 url: mainURL,
                 auth: {
@@ -955,18 +912,122 @@ exports.gettBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID) =>
             })
                 .then(function (response) {
                 var result = response["data"]["tasks"];
+                SummaryData = result;
                 // Result data
-                return res.status(200).json({
-                    message: "seen",
-                    data: result,
-                });
             })
                 .catch(function (error) {
-                console.log(error);
-                return res.status(200).json({
+                res.status(200).json({
                     message: "seen",
                     data: error,
                 });
+            });
+            //anchor backlink data
+            const mainURL2 = `${process.env.BACKLINK_ANCHOR_URL}`;
+            let searchedAnchorData = [
+                {
+                    // target: "explodingtopics.com",
+                    target: keywords,
+                    limit: 4,
+                },
+            ];
+            yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL2,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedAnchorData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                AnchorData = result;
+                // Result data
+            })
+                .catch(function (error) {
+                res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+            //reffering_domain backlink data
+            const mainURL3 = `${process.env.BACKLINK_REFERRING_URL}`;
+            let searchedReferringData = [
+                {
+                    // target: "explodingtopics.com",
+                    target: keywords,
+                    mode: "as_is",
+                    filters: ["dofollow", "=", true],
+                    limit: 5,
+                },
+            ];
+            yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL3,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedReferringData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                ReferringData = result;
+                // Result data
+            })
+                .catch(function (error) {
+                res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+            // main backlinks data
+            const mainURL4 = `${process.env.BACKLINK_MAIN_BACKLINKS_URL}`;
+            let searchedBackLinkData = [
+                {
+                    target: keywords,
+                    limit: 5,
+                    order_by: ["rank,desc"],
+                    exclude_internal_backlinks: true,
+                    backlinks_filters: ["dofollow", "=", true],
+                },
+            ];
+            yield (0, axios_1.default)({
+                method: "post",
+                url: mainURL4,
+                auth: {
+                    username: process.env.LOGIN_ID,
+                    password: process.env.LOGIN_KEY,
+                },
+                data: searchedBackLinkData,
+                headers: {
+                    "content-type": "application/json",
+                },
+            })
+                .then(function (response) {
+                var result = response["data"]["tasks"];
+                BackLinkData = result;
+            })
+                .catch(function (error) {
+                res.status(200).json({
+                    message: "seen",
+                    data: error,
+                });
+            });
+            return res.status(200).json({
+                message: "seen",
+                data: {
+                    SummaryData,
+                    AnchorData,
+                    ReferringData,
+                    BackLinkData,
+                },
             });
         }
         else {
@@ -1021,7 +1082,6 @@ exports.getTestBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID)
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -1040,7 +1100,6 @@ exports.getTestBacklinkSummary = (0, handlers_1.asyncHandler)((req, res, dataID)
 }));
 //  Business Data API
 exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         let myLocationData = {};
         // Search has to be location base to get the best of Result
@@ -1050,9 +1109,7 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //  For getting Language
@@ -1080,14 +1137,11 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                     language = props;
                 }
                 else {
-                    // console.log("No result");
                     return "No result";
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //  For getting Location
         yield (0, axios_1.default)({
             method: "get",
@@ -1118,14 +1172,11 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                 }
             });
         })
-            .catch(function (error) {
-            console.log(error);
-        });
+            .catch(function (error) { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { keywords } = req.body;
-        console.log((_a = location.country_iso_code) === null || _a === void 0 ? void 0 : _a.toLowerCase());
         let searchedData = [
             {
                 // language_code: "en",
@@ -1151,7 +1202,6 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                 },
             })
                 .then(function (response) {
-                console.log("getting results: ");
                 var result = response["data"]["tasks"];
                 // Result data
                 return res.status(200).json({
@@ -1160,7 +1210,6 @@ exports.postBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -1187,9 +1236,7 @@ exports.getBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         let language_name = "English (United Kingdom)";
         let location_name = `${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.city},${myLocationData === null || myLocationData === void 0 ? void 0 : myLocationData.country}`;
         //   checking for the validity of a user
@@ -1226,7 +1273,6 @@ exports.getBusinessInfo = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "seen",
                     data: error,
@@ -1251,7 +1297,6 @@ exports.postOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
         const { word } = req.body;
-        console.log("New Data Search: ", word);
         let searchedData = [
             {
                 target: word,
@@ -1284,7 +1329,6 @@ exports.postOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __a
                 });
             })
                 .catch(function (error) {
-                console.log(error);
                 return res.status(200).json({
                     message: "Error",
                     data: error,
@@ -1311,9 +1355,7 @@ exports.getOnPagesData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -1380,9 +1422,7 @@ exports.getKeywordData = (0, handlers_1.asyncHandler)((req, res, dataID) => __aw
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -1444,9 +1484,7 @@ exports.postContentSummaryData = (0, handlers_1.asyncHandler)((req, res, dataID)
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
@@ -1516,9 +1554,7 @@ exports.postContentSearchData = (0, handlers_1.asyncHandler)((req, res, dataID) 
             .then((response) => {
             myLocationData = response.data;
         })
-            .catch((error) => {
-            console.log(error);
-        });
+            .catch((error) => { });
         //   checking for the validity of a user
         const user = yield userModel_1.default.findById(req.params.id);
         //    getting user's search words
