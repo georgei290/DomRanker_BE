@@ -242,7 +242,7 @@ export const loginUser = async (req: Request, res: Response) => {
 				//encrypting user's info for persistent
 				const tokenData: any = jwt.sign(
 					{ id: user._id, status: user.status },
-					process.env.SECRET!,
+					"letsDoThis",
 				);
 				if (passCheck) {
 					const { password, ...info } = user._doc;
