@@ -41,6 +41,8 @@
 		"streamifier": "^0.1.1",
 		"stripe": "^11.11.0",
 		"ts-node": "^10.9.1",
+		"tsc": "^2.0.4",
+		"typescript": "^5.0.4",
 		"uuid": "^9.0.0",
 		"uuidv4": "^6.2.13",
 		"validator": "^13.9.0"
