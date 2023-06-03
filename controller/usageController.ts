@@ -130,6 +130,67 @@ export const getGoogleKeywords = asyncHandler(
 	},
 );
 
+// Youtube SEO
+export const getYoutubeKeywords = asyncHandler(
+	async (req: Request, res: Response): Promise<Response> => {
+		try {
+			const user = await userModel.findById(req.params.id);
+			console.log(user);
+			// Search has to be location base to get the best of Result
+			const { keywords } = req.body;
+			//   getting user's location
+
+			let language_name = "English (United Kingdom)";
+
+			//   checking for the validity of a user
+
+			//    getting user's search words
+
+			if (user) {
+				//  getting user's searched result
+				return await axios({
+					method: "post",
+					url: "https://api.dataforseo.com/v3/serp/youtube/organic/live/advanced",
+					auth: {
+						username: process.env.LOGIN_ID!,
+						password: process.env.LOGIN_KEY!,
+					},
+					data: [
+						{
+							keyword: encodeURI(keywords),
+							language_code: "en",
+							location_code: 2840,
+						},
+					],
+					headers: {
+						"content-type": "application/json",
+					},
+				})
+					.then(function (response: any) {
+						var result = response["data"]["tasks"];
+						// Result data
+						return res.status(200).json({
+							message: "seen",
+							data: result,
+						});
+					})
+					.catch(function (error: any) {
+						return res.status(200).json({
+							message: "seen",
+							data: error,
+						});
+					});
+			} else {
+				return res.status(200).json({
+					message: "You do not have access right for this Operation",
+				});
+			}
+		} catch (error) {
+			return res.status(404).json({ message: "An Error Occur", error });
+		}
+	},
+);
+
 // BING SEO
 export const getBingKeywords = asyncHandler(
 	async (req: Request, res: Response): Promise<Response> => {
@@ -1536,22 +1597,23 @@ export const getKeywordData = asyncHandler(
 				.catch((error) => {});
 
 			//   checking for the validity of a user
-			const user = await userModel.findById(req.params.id);
+			// const user = await userModel.findById(req.params.id);
 
 			//    getting user's search words
 			const { target } = req.body;
 
 			let searchedData = [
 				{
-					language_code: "en",
 					location_code: 2840,
 					target,
+					date_from: "2021-08-01",
+					search_partners: true,
 				},
 			];
 
-			if (user) {
+			// if (user) {
 				//  getting business's searched result
-				const mainURL = `${process.env.KEYWORD_URL}`;
+				const mainURL = `https://api.dataforseo.com/v3/keywords_data/google_ads/keywords_for_site/live`;
 				return await axios({
 					method: "post",
 					url: mainURL,
@@ -1578,13 +1640,15 @@ export const getKeywordData = asyncHandler(
 							data: error,
 						});
 					});
-			} else {
-				return res.status(200).json({
-					message: "You do not have access right for this Operation",
-				});
-			}
+			// } 
+			// 
+			// else {
+				// return res.status(200).json({
+					// message: "You do not have access right for this Operation",
+				// });
+			// }
 		} catch (error) {
-			return res.status(404).json({ message: "An Error Occur" });
+			return res.status(404).json({ message: "An Error Occur", error });
 		}
 	},
 );

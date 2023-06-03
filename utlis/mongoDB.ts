@@ -9,7 +9,7 @@ let dbString = process.env.DB_STRING_ONLINE_WORK;
 export const connectDB = async(): Promise<void> => {
     try{
         mongoose.connect(dbString!, () => {
-          console.log("db connected");
+          console.log("db connected", dbString);
         });
     }catch(err){
       console.log(err)

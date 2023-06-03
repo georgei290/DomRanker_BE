@@ -1,31 +1,33 @@
 import express, { Router } from "express";
 import {
-  postBaiduKeywords,
-  getBaiduKeywords,
-  getSeznamKeywords,
-  postSeznamKeywords,
-  postNaverKeywords,
-  getNaverKeywords,
-  getBingKeywords,
-  getGoogleKeywords,
-  getYahooKeywords,
-  gettBacklinkSummary,
-  postBusinessInfo,
-  getBusinessInfo,
-  postOnPagesData,
-  getOnPagesData,
-  getTestBacklinkSummary,
-  postYahooKeywords,
-  getKeywordData,
-  postContentSummaryData,
-  postContentSearchData,
-  // starterPlan
+	postBaiduKeywords,
+	getBaiduKeywords,
+	getSeznamKeywords,
+	postSeznamKeywords,
+	postNaverKeywords,
+	getNaverKeywords,
+	getBingKeywords,
+	getGoogleKeywords,
+	getYahooKeywords,
+	gettBacklinkSummary,
+	postBusinessInfo,
+	getBusinessInfo,
+	postOnPagesData,
+	getOnPagesData,
+	getTestBacklinkSummary,
+	postYahooKeywords,
+	getKeywordData,
+	postContentSummaryData,
+	postContentSearchData,
+	getYoutubeKeywords,
+	// starterPlan
 } from "../controller/usageController";
 
 const router: Router = express.Router();
 
 // SERP: SEO
 router.route("/:id/get-google-search").post(getGoogleKeywords);
+router.route("/:id/get-youtube-search").post(getYoutubeKeywords);
 router.route("/:id/get-bing-search").post(getBingKeywords);
 
 // Yahoo
@@ -57,7 +59,7 @@ router.route("/:id/on-page-search").post(postOnPagesData);
 router.route("/:id/read-on-page-search").post(getOnPagesData);
 
 // keyWord API Call
-router.route("/:id/keyword").post(getKeywordData);
+router.route("/keyword").post(getKeywordData);
 
 // Content Summary API Call
 router.route("/:id/content-summary").post(postContentSummaryData);
